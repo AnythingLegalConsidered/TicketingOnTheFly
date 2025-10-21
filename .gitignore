@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/*
+*.log
+npm-debug.log*
+
+# Database files
+*.sqlite
+*.db
+
+# Secret files
+secrets/*
+!secrets/README.md
+!secrets/example.*
+
+# Docker volumes
+data/
+
+# Build output
+dist/
+build/
+out/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Monitoring data
+monitoring/grafana/data/
+monitoring/prometheus/data/
+monitoring/loki/data/
+
+# Cache
+.cache/
+*.cache
