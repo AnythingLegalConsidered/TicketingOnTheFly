@@ -1,0 +1,812 @@
+time="2025-10-20T21:37:15Z" level=info msg="Traefik version 2.11.29 built on 2025-08-26T13:07:36Z"
+time="2025-10-20T21:37:15Z" level=info msg="\nStats collection is disabled.\nHelp us improve Traefik by turning this feature on :)\nMore details on: https://doc.traefik.io/traefik/contributing/data-collection/\n"
+time="2025-10-20T21:37:15Z" level=info msg="Starting provider aggregator *aggregator.ProviderAggregator"
+time="2025-10-20T21:37:15Z" level=info msg="Starting provider *file.Provider"
+time="2025-10-20T21:37:15Z" level=error msg="Error while building configuration (for the first time): /etc/traefik/dynamic/redirect.yml: field not found, node: redirect" providerName=file
+time="2025-10-20T21:37:15Z" level=info msg="Starting provider *traefik.Provider"
+time="2025-10-20T21:37:15Z" level=info msg="Starting provider *docker.Provider"
+time="2025-10-20T21:37:15Z" level=info msg="Starting provider *acme.Provider"
+time="2025-10-20T21:37:15Z" level=info msg="Testing certificate renew..." providerName=letsencrypt.acme ACME CA="https://acme-v02.api.letsencrypt.org/directory"
+time="2025-10-20T21:37:15Z" level=info msg="Starting provider *acme.ChallengeTLSALPN"
+time="2025-10-20T21:37:16Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:37:16Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:37:46Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:37:46Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:37:46Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:38:10Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:38:10Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:38:10Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:38:23Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:38:23Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:38:23Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:38:23Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:38:25Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:38:25Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:38:25Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:38:25Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:38:27Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:38:27Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:38:27Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:38:27Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:38:29Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:38:29Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:38:29Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:38:29Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:38:33Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:38:33Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:38:33Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:38:33Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:39:02Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:39:02Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:39:02Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:39:02Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:39:03Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:39:03Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:39:03Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:39:03Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:39:37Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:39:37Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:39:37Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:39:37Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:39:37Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:39:42Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:39:42Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:39:42Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:39:42Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:39:42Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:39:44Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:39:44Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:39:44Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:39:44Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:39:44Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:40:02Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:40:02Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:40:02Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:40:02Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:40:02Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:40:04Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:40:04Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:40:04Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:40:04Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:40:04Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:40:06Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:40:06Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:40:06Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:40:06Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:40:06Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:40:08Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:40:08Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:40:08Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:40:08Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:40:08Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:41:04Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:41:04Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:41:04Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:41:04Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:41:04Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:41:06Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:41:06Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:41:06Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:41:06Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:41:06Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:41:07Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:41:07Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:41:07Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:41:07Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:41:07Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:41:09Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:41:09Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:41:09Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:41:09Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:41:09Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:42:04Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:42:04Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:42:04Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:42:04Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:42:04Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:42:06Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:42:06Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:42:06Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:42:06Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:42:06Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:42:19Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:42:19Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:42:19Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:42:19Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:42:19Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:42:21Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:42:21Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:42:21Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:42:21Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:42:21Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:42:26Z" level=info msg="I have to go..."
+time="2025-10-20T21:42:26Z" level=info msg="Stopping server gracefully"
+time="2025-10-20T21:42:26Z" level=error msg="accept tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:42:26Z" level=error msg="close tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:42:26Z" level=error msg="accept tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:42:26Z" level=error msg="close tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:42:26Z" level=info msg="Server stopped"
+time="2025-10-20T21:42:26Z" level=info msg="Shutting down"
+time="2025-10-20T21:42:26Z" level=error msg="Failed to list containers for docker, error Get \"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json\": context canceled" providerName=docker
+time="2025-10-20T21:42:26Z" level=error msg="Cannot connect to docker server context canceled" providerName=docker
+time="2025-10-20T21:42:36Z" level=info msg="Traefik version 2.11.29 built on 2025-08-26T13:07:36Z"
+time="2025-10-20T21:42:36Z" level=info msg="\nStats collection is disabled.\nHelp us improve Traefik by turning this feature on :)\nMore details on: https://doc.traefik.io/traefik/contributing/data-collection/\n"
+time="2025-10-20T21:42:36Z" level=info msg="Starting provider aggregator *aggregator.ProviderAggregator"
+time="2025-10-20T21:42:36Z" level=info msg="Starting provider *file.Provider"
+time="2025-10-20T21:42:37Z" level=error msg="Error while building configuration (for the first time): /etc/traefik/dynamic/redirect.yml: field not found, node: redirect" providerName=file
+time="2025-10-20T21:42:37Z" level=info msg="Starting provider *traefik.Provider"
+time="2025-10-20T21:42:37Z" level=info msg="Starting provider *acme.ChallengeTLSALPN"
+time="2025-10-20T21:42:37Z" level=info msg="Starting provider *acme.Provider"
+time="2025-10-20T21:42:37Z" level=info msg="Testing certificate renew..." providerName=letsencrypt.acme ACME CA="https://acme-v02.api.letsencrypt.org/directory"
+time="2025-10-20T21:42:37Z" level=info msg="Starting provider *docker.Provider"
+time="2025-10-20T21:42:39Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:42:39Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:42:42Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:42:42Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:42:42Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:42:50Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:42:50Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:42:50Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:42:52Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:42:52Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:42:52Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:42:56Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:42:56Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:42:56Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:42:58Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:42:58Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:42:58Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:43:02Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:43:02Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:43:02Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:43:04Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:43:04Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:43:04Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:43:08Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:43:08Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:43:08Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:43:08Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:43:10Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:43:10Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:43:10Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:43:10Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:43:12Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:43:12Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:43:12Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:43:12Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:43:33Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:43:33Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:43:33Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:43:33Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:43:55Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:43:55Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:43:55Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:43:55Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:43:55Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:44:01Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:44:01Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:44:01Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:44:01Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:44:01Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:44:24Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:44:24Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:44:24Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:44:24Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:44:24Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:44:26Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:44:26Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:44:26Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:44:26Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:44:26Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:45:07Z" level=info msg="I have to go..."
+time="2025-10-20T21:45:07Z" level=info msg="Stopping server gracefully"
+time="2025-10-20T21:45:07Z" level=error msg="accept tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:45:07Z" level=error msg="accept tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:45:07Z" level=error msg="close tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:45:07Z" level=error msg="close tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:45:07Z" level=info msg="Server stopped"
+time="2025-10-20T21:45:07Z" level=info msg="Shutting down"
+time="2025-10-20T21:45:28Z" level=info msg="Traefik version 2.11.29 built on 2025-08-26T13:07:36Z"
+time="2025-10-20T21:45:28Z" level=info msg="\nStats collection is disabled.\nHelp us improve Traefik by turning this feature on :)\nMore details on: https://doc.traefik.io/traefik/contributing/data-collection/\n"
+time="2025-10-20T21:45:28Z" level=info msg="Starting provider aggregator *aggregator.ProviderAggregator"
+time="2025-10-20T21:45:28Z" level=info msg="Starting provider *file.Provider"
+time="2025-10-20T21:45:28Z" level=error msg="Error while building configuration (for the first time): /etc/traefik/dynamic/redirect.yml: field not found, node: redirect" providerName=file
+time="2025-10-20T21:45:28Z" level=info msg="Starting provider *traefik.Provider"
+time="2025-10-20T21:45:28Z" level=info msg="Starting provider *docker.Provider"
+time="2025-10-20T21:45:28Z" level=info msg="Starting provider *acme.Provider"
+time="2025-10-20T21:45:28Z" level=info msg="Testing certificate renew..." providerName=letsencrypt.acme ACME CA="https://acme-v02.api.letsencrypt.org/directory"
+time="2025-10-20T21:45:28Z" level=info msg="Starting provider *acme.ChallengeTLSALPN"
+time="2025-10-20T21:45:30Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:45:30Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:45:33Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:45:33Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:45:33Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:45:35Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:45:35Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:45:35Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:45:38Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:45:38Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:45:38Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:45:40Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:45:40Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:45:40Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:45:59Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:45:59Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:45:59Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:45:59Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:46:00Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:46:00Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:46:00Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:46:00Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:46:02Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:46:02Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:46:02Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:46:02Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:46:07Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:46:07Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:46:07Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:46:07Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:46:07Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:46:25Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:46:25Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:46:25Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:46:25Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:46:25Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:46:27Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:46:27Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:46:27Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:46:27Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:46:27Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:46:28Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:46:28Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:46:28Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:46:28Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:46:28Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:46:44Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:46:44Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:46:44Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:46:44Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:46:44Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:46:46Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:46:46Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:46:46Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:46:46Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:46:46Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:46:58Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:46:58Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:46:58Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:46:58Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:46:58Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:47:00Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:47:00Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:47:00Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:47:00Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:47:00Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:47:16Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:47:16Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:47:16Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:47:16Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:47:16Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:47:18Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:47:18Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:47:18Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:47:18Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:47:18Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:47:20Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:47:20Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:47:20Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:47:20Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:47:20Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:48:05Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:48:05Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:48:05Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:48:05Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:48:05Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:48:07Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:48:07Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:48:07Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:48:07Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:48:07Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:48:09Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:48:09Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:48:09Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:48:09Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:48:16Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:48:16Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:48:16Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:48:16Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:48:37Z" level=info msg="I have to go..."
+time="2025-10-20T21:48:37Z" level=info msg="Stopping server gracefully"
+time="2025-10-20T21:48:37Z" level=error msg="accept tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:48:37Z" level=error msg="accept tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:48:37Z" level=error msg="close tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:48:37Z" level=error msg="close tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:48:37Z" level=info msg="Server stopped"
+time="2025-10-20T21:48:37Z" level=info msg="Shutting down"
+time="2025-10-20T21:48:56Z" level=info msg="Traefik version 2.11.29 built on 2025-08-26T13:07:36Z"
+time="2025-10-20T21:48:56Z" level=info msg="\nStats collection is disabled.\nHelp us improve Traefik by turning this feature on :)\nMore details on: https://doc.traefik.io/traefik/contributing/data-collection/\n"
+time="2025-10-20T21:48:56Z" level=info msg="Starting provider aggregator *aggregator.ProviderAggregator"
+time="2025-10-20T21:48:56Z" level=info msg="Starting provider *file.Provider"
+time="2025-10-20T21:48:56Z" level=error msg="Error while building configuration (for the first time): /etc/traefik/dynamic/redirect.yml: field not found, node: redirect" providerName=file
+time="2025-10-20T21:48:56Z" level=info msg="Starting provider *traefik.Provider"
+time="2025-10-20T21:48:56Z" level=info msg="Starting provider *docker.Provider"
+time="2025-10-20T21:48:56Z" level=info msg="Starting provider *acme.ChallengeTLSALPN"
+time="2025-10-20T21:48:56Z" level=info msg="Starting provider *acme.Provider"
+time="2025-10-20T21:48:56Z" level=info msg="Testing certificate renew..." ACME CA="https://acme-v02.api.letsencrypt.org/directory" providerName=letsencrypt.acme
+time="2025-10-20T21:49:00Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:49:00Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:49:03Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:49:03Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:49:03Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:49:13Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:49:13Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:49:13Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:49:15Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:49:15Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:49:15Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:49:23Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:49:23Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:49:23Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:49:25Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:49:25Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:49:25Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:49:29Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:49:29Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:49:29Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:49:29Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:49:33Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:49:33Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:49:33Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:49:33Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:49:54Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:49:54Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:49:54Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:49:54Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:50:17Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:50:17Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:50:17Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:50:17Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:50:17Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:50:27Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:50:27Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:50:27Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:50:27Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:50:27Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:51:22Z" level=info msg="I have to go..."
+time="2025-10-20T21:51:22Z" level=info msg="Stopping server gracefully"
+time="2025-10-20T21:51:22Z" level=error msg="accept tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:51:22Z" level=error msg="accept tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:51:22Z" level=error msg="close tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:51:22Z" level=error msg="close tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:51:22Z" level=info msg="Server stopped"
+time="2025-10-20T21:51:22Z" level=info msg="Shutting down"
+time="2025-10-20T21:51:50Z" level=info msg="Traefik version 2.11.29 built on 2025-08-26T13:07:36Z"
+time="2025-10-20T21:51:50Z" level=info msg="\nStats collection is disabled.\nHelp us improve Traefik by turning this feature on :)\nMore details on: https://doc.traefik.io/traefik/contributing/data-collection/\n"
+time="2025-10-20T21:51:50Z" level=info msg="Starting provider aggregator *aggregator.ProviderAggregator"
+time="2025-10-20T21:51:50Z" level=info msg="Starting provider *file.Provider"
+time="2025-10-20T21:51:50Z" level=error msg="Error while building configuration (for the first time): /etc/traefik/dynamic/redirect.yml: field not found, node: redirect" providerName=file
+time="2025-10-20T21:51:50Z" level=info msg="Starting provider *traefik.Provider"
+time="2025-10-20T21:51:50Z" level=info msg="Starting provider *acme.Provider"
+time="2025-10-20T21:51:50Z" level=info msg="Testing certificate renew..." providerName=letsencrypt.acme ACME CA="https://acme-v02.api.letsencrypt.org/directory"
+time="2025-10-20T21:51:50Z" level=info msg="Starting provider *acme.ChallengeTLSALPN"
+time="2025-10-20T21:51:50Z" level=info msg="Starting provider *docker.Provider"
+time="2025-10-20T21:51:53Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:51:53Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:51:55Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:51:55Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:51:55Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:52:11Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:52:11Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:52:11Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:52:13Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:52:13Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:52:13Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:52:22Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:52:22Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:52:22Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:52:22Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:52:26Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:52:26Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:52:26Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:52:26Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:52:29Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:52:29Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:52:29Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:52:29Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:52:29Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:52:47Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:52:47Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:52:47Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:52:47Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:52:47Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:52:51Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:52:51Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:52:51Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:52:51Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:52:51Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:03Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:03Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:53:03Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:03Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:03Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:53:05Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:05Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:05Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:53:05Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:05Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:53:07Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:07Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:53:07Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:07Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:53:07Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:09Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:09Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:09Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:53:09Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:09Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:53:20Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:20Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:20Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:53:20Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:20Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:53:22Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:22Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:53:22Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:22Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:53:22Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:53:38Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:38Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:53:38Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:53:38Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:53:38Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:40Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:53:40Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:40Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:53:40Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:53:40Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:42Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:53:42Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:53:42Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:53:42Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:53:42Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:54:31Z" level=info msg="I have to go..."
+time="2025-10-20T21:54:31Z" level=info msg="Stopping server gracefully"
+time="2025-10-20T21:54:31Z" level=error msg="accept tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:54:31Z" level=error msg="close tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T21:54:31Z" level=error msg="accept tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:54:31Z" level=error msg="close tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T21:54:31Z" level=info msg="Server stopped"
+time="2025-10-20T21:54:31Z" level=info msg="Shutting down"
+time="2025-10-20T21:54:44Z" level=info msg="Traefik version 2.11.29 built on 2025-08-26T13:07:36Z"
+time="2025-10-20T21:54:44Z" level=info msg="\nStats collection is disabled.\nHelp us improve Traefik by turning this feature on :)\nMore details on: https://doc.traefik.io/traefik/contributing/data-collection/\n"
+time="2025-10-20T21:54:44Z" level=info msg="Starting provider aggregator *aggregator.ProviderAggregator"
+time="2025-10-20T21:54:44Z" level=info msg="Starting provider *file.Provider"
+time="2025-10-20T21:54:44Z" level=error msg="Error while building configuration (for the first time): /etc/traefik/dynamic/redirect.yml: field not found, node: redirect" providerName=file
+time="2025-10-20T21:54:44Z" level=info msg="Starting provider *traefik.Provider"
+time="2025-10-20T21:54:44Z" level=info msg="Starting provider *docker.Provider"
+time="2025-10-20T21:54:44Z" level=info msg="Starting provider *acme.ChallengeTLSALPN"
+time="2025-10-20T21:54:44Z" level=info msg="Starting provider *acme.Provider"
+time="2025-10-20T21:54:44Z" level=info msg="Testing certificate renew..." ACME CA="https://acme-v02.api.letsencrypt.org/directory" providerName=letsencrypt.acme
+time="2025-10-20T21:54:47Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:54:47Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:54:50Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:54:50Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:54:50Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:55:16Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:55:16Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:55:16Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:55:16Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:55:18Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:55:18Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:55:18Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:55:18Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:55:20Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:55:20Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:55:20Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:55:20Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:55:22Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:55:22Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:55:22Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:55:22Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:55:43Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:55:43Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:55:43Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:55:43Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:55:45Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:55:45Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:55:45Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:55:45Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:55:47Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:55:47Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:55:47Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:55:47Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:56:00Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:56:00Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:56:00Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:56:00Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:56:15Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:56:15Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:56:15Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:56:15Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:56:34Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:56:34Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:56:34Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:56:34Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:56:36Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:56:36Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:56:36Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:56:36Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:56:39Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:56:39Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:56:39Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:56:39Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:56:44Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:56:44Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:56:44Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:56:44Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:56:44Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:57:21Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T21:57:21Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:57:21Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:57:21Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:57:21Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:57:23Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:57:23Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:57:23Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T21:57:23Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:57:23Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:57:35Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:57:35Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:57:35Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:57:35Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:57:35Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:57:37Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:57:37Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:57:37Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:57:37Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:57:37Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:57:39Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:57:39Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:57:39Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:57:39Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:57:39Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:58:35Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:58:35Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:58:35Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:58:35Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:58:35Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:58:39Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:58:39Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:58:39Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:58:39Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:58:39Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:58:42Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:58:42Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:58:42Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:58:42Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T21:58:42Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T21:58:44Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:58:44Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:58:44Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:58:44Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:59:36Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T21:59:36Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:59:36Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T21:59:36Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T21:59:38Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T21:59:38Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T21:59:38Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T21:59:38Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:00:03Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:00:03Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:00:03Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:00:03Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T22:00:03Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:00:38Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:00:38Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:00:38Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:00:38Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:00:38Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T22:01:23Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:01:23Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:01:23Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:01:23Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:01:23Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:01:25Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T22:01:25Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:01:25Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:01:25Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:01:25Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:01:36Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T22:01:36Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:01:36Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:01:36Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:01:36Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:01:38Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:01:38Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:01:38Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:01:38Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:01:38Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:01:40Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:01:40Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:01:40Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:01:40Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:01:40Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:02:40Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:02:40Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:02:40Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:02:40Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:02:40Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:02:42Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:02:42Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:02:42Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:02:42Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:02:42Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:03:41Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:03:41Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:03:41Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:03:41Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:03:41Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:03:57Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:03:57Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:03:57Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:03:57Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:03:57Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:03:59Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:03:59Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:03:59Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:03:59Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:03:59Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:04:37Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:04:37Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:04:37Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:04:37Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:04:37Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:04:39Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:04:39Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:04:39Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:04:39Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:04:39Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T22:04:41Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:04:41Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:04:41Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:04:41Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:04:41Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:04:46Z" level=warning msg="A new release of Traefik has been found: 3.5.3. Please consider updating."
+time="2025-10-20T22:05:22Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:05:22Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:05:22Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:05:22Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:05:22Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:05:37Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:05:37Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:05:37Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:05:37Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:05:37Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:05:39Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:05:39Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:05:39Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:05:39Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:05:39Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:05:41Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T22:05:41Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:05:41Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T22:05:41Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:05:41Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:05:58Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:05:58Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:05:58Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:05:58Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:06:13Z" level=info msg="I have to go..."
+time="2025-10-20T22:06:13Z" level=info msg="Stopping server gracefully"
+time="2025-10-20T22:06:13Z" level=error msg="accept tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T22:06:13Z" level=error msg="accept tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T22:06:13Z" level=error msg="close tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T22:06:13Z" level=error msg="close tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T22:06:13Z" level=info msg="Server stopped"
+time="2025-10-20T22:06:13Z" level=info msg="Shutting down"
+time="2025-10-20T22:06:14Z" level=info msg="Traefik version 2.11.29 built on 2025-08-26T13:07:36Z"
+time="2025-10-20T22:06:14Z" level=info msg="\nStats collection is disabled.\nHelp us improve Traefik by turning this feature on :)\nMore details on: https://doc.traefik.io/traefik/contributing/data-collection/\n"
+time="2025-10-20T22:06:14Z" level=info msg="Starting provider aggregator *aggregator.ProviderAggregator"
+time="2025-10-20T22:06:14Z" level=info msg="Starting provider *file.Provider"
+time="2025-10-20T22:06:14Z" level=error msg="Error while building configuration (for the first time): /etc/traefik/dynamic/redirect.yml: field not found, node: redirect" providerName=file
+time="2025-10-20T22:06:14Z" level=info msg="Starting provider *traefik.Provider"
+time="2025-10-20T22:06:14Z" level=info msg="Starting provider *acme.Provider"
+time="2025-10-20T22:06:14Z" level=info msg="Testing certificate renew..." providerName=letsencrypt.acme ACME CA="https://acme-v02.api.letsencrypt.org/directory"
+time="2025-10-20T22:06:14Z" level=info msg="Starting provider *docker.Provider"
+time="2025-10-20T22:06:14Z" level=info msg="Starting provider *acme.ChallengeTLSALPN"
+time="2025-10-20T22:06:14Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:06:14Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:06:14Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:06:14Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T22:06:44Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:06:44Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:06:44Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:06:44Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:07:38Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:07:38Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:07:38Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:07:38Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:07:40Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:07:40Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:07:40Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T22:07:40Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:07:42Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:07:42Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:07:42Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:07:42Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:07:56Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:07:56Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:07:56Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:07:56Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:07:56Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:08:03Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:08:03Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:08:03Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:08:03Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:08:03Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:08:39Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:08:39Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:08:39Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:08:39Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:08:39Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:08:40Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:08:40Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:08:40Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:08:40Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:08:40Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:08:43Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:08:43Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:08:43Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:08:43Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:08:43Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:09:22Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:09:22Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:09:22Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:09:22Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:09:22Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:09:24Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" routerName=grafana@docker entryPointName=web
+time="2025-10-20T22:09:24Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T22:09:24Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:09:24Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" routerName=phpldapadmin@docker entryPointName=web
+time="2025-10-20T22:09:24Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:09:44Z" level=error msg="error while parsing rule Host('grafana.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=grafana@docker
+time="2025-10-20T22:09:44Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:09:44Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" routerName=ocs@docker entryPointName=web
+time="2025-10-20T22:09:44Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:09:44Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:10:22Z" level=warning msg="Failed to inspect container 7d88b35eea6524b8cbcebe3a620f309ccae699e1ebe654826ab0cae6a238e686, error: Error response from daemon: No such container: 7d88b35eea6524b8cbcebe3a620f309ccae699e1ebe654826ab0cae6a238e686" providerName=docker
+time="2025-10-20T22:10:23Z" level=warning msg="Failed to inspect container 6f0723b2aa18f194782d88d7e83266d2ee03631a6fb24e5c79673007ddcbadaa, error: Error response from daemon: No such container: 6f0723b2aa18f194782d88d7e83266d2ee03631a6fb24e5c79673007ddcbadaa" providerName=docker
+time="2025-10-20T22:10:23Z" level=warning msg="Failed to inspect container cfa4e4fb7d70937b267a9da679eb7e021874a9eb1f0be072ecabece309be1286, error: Error response from daemon: No such container: cfa4e4fb7d70937b267a9da679eb7e021874a9eb1f0be072ecabece309be1286" providerName=docker
+time="2025-10-20T22:10:23Z" level=warning msg="Failed to inspect container 4d055100bfde3a1f77517f771f2170fa76847cbe8acd0dd0f3c762527cee68f8, error: Error response from daemon: No such container: 4d055100bfde3a1f77517f771f2170fa76847cbe8acd0dd0f3c762527cee68f8" providerName=docker
+time="2025-10-20T22:10:23Z" level=warning msg="Failed to inspect container d420f867adec0f3bfb990da45b2330cfa4bf84abe490818f00da32a15693d571, error: Error response from daemon: No such container: d420f867adec0f3bfb990da45b2330cfa4bf84abe490818f00da32a15693d571" providerName=docker
+time="2025-10-20T22:10:23Z" level=error msg="error while parsing rule Host('ocs.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=ocs@docker
+time="2025-10-20T22:10:23Z" level=error msg="error while parsing rule Host('ldapadmin.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=phpldapadmin@docker
+time="2025-10-20T22:10:23Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:10:24Z" level=warning msg="Failed to inspect container c7324691d537710f147d4046a0c6649ff290124a2fa8fc9aaa175c7b31ea4b60, error: Error response from daemon: No such container: c7324691d537710f147d4046a0c6649ff290124a2fa8fc9aaa175c7b31ea4b60" providerName=docker
+time="2025-10-20T22:10:24Z" level=warning msg="Failed to inspect container abb234931d8bc99380c2cf5f3f5ff12a128f84ad36da58db07b132b8c4543315, error: Error response from daemon: No such container: abb234931d8bc99380c2cf5f3f5ff12a128f84ad36da58db07b132b8c4543315" providerName=docker
+time="2025-10-20T22:10:25Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:10:31Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" routerName=mailhog@docker entryPointName=web
+time="2025-10-20T22:10:31Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:11:12Z" level=warning msg="Failed to inspect container 9a4e94d8112abb6277a686cd5b4aa37dd301c424a188175f41fb4bdbe240a38d, error: Error response from daemon: No such container: 9a4e94d8112abb6277a686cd5b4aa37dd301c424a188175f41fb4bdbe240a38d" providerName=docker
+time="2025-10-20T22:11:12Z" level=warning msg="Failed to inspect container 636afc2da96ab91c999ae73c51122fa365594020aba9e1e69eb9d92ade785f3d, error: Error response from daemon: No such container: 636afc2da96ab91c999ae73c51122fa365594020aba9e1e69eb9d92ade785f3d" providerName=docker
+time="2025-10-20T22:11:13Z" level=warning msg="Failed to inspect container f0112c1e73cae62265e8f3a6bf3755b3dd79b7fdfe55d21113c66a215e968fc1, error: Error response from daemon: No such container: f0112c1e73cae62265e8f3a6bf3755b3dd79b7fdfe55d21113c66a215e968fc1" providerName=docker
+time="2025-10-20T22:11:13Z" level=warning msg="Failed to inspect container d1e8b00ef156a5b9c5fba58d10596ad47618107f0b1a61dfbb1f9ceb5738aeff, error: Error response from daemon: No such container: d1e8b00ef156a5b9c5fba58d10596ad47618107f0b1a61dfbb1f9ceb5738aeff" providerName=docker
+time="2025-10-20T22:11:13Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" routerName=traefik@docker entryPointName=web
+time="2025-10-20T22:11:14Z" level=warning msg="Failed to inspect container a2e9e687e4af991f310aba156b19be5ceb35994bf1496888cd1126f6f4cf3add, error: Error response from daemon: No such container: a2e9e687e4af991f310aba156b19be5ceb35994bf1496888cd1126f6f4cf3add" providerName=docker
+time="2025-10-20T22:11:15Z" level=warning msg="Failed to inspect container 837eb3b182b13ef18f8233b132d07325c14900cdd9e7955ba731de8afb807423, error: Error response from daemon: No such container: 837eb3b182b13ef18f8233b132d07325c14900cdd9e7955ba731de8afb807423" providerName=docker
+time="2025-10-20T22:11:23Z" level=error msg="error while parsing rule Host('mailhog.localhost'): 1:6: illegal rune literal" entryPointName=web routerName=mailhog@docker
+time="2025-10-20T22:11:23Z" level=error msg="error while parsing rule Host('traefik.ticketing.local'): 1:6: illegal rune literal" entryPointName=web routerName=traefik@docker
+time="2025-10-20T22:16:14Z" level=warning msg="A new release of Traefik has been found: 3.5.3. Please consider updating."
+time="2025-10-20T22:17:08Z" level=info msg="I have to go..."
+time="2025-10-20T22:17:08Z" level=info msg="Stopping server gracefully"
+time="2025-10-20T22:17:08Z" level=error msg="accept tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T22:17:08Z" level=error msg="close tcp [::]:443: use of closed network connection" entryPointName=websecure
+time="2025-10-20T22:17:08Z" level=error msg="accept tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T22:17:08Z" level=error msg="close tcp [::]:80: use of closed network connection" entryPointName=web
+time="2025-10-20T22:17:09Z" level=info msg="Server stopped"
+time="2025-10-20T22:17:09Z" level=info msg="Shutting down"
+time="2025-10-20T22:17:09Z" level=warning msg="Failed to inspect container 012b995bb1fb784c33069b1b381da0c7a98c1fef80a602a1891442fbd38227b7, error: Get \"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/012b995bb1fb784c33069b1b381da0c7a98c1fef80a602a1891442fbd38227b7/json\": context canceled" providerName=docker
+time="2025-10-20T22:17:09Z" level=warning msg="Failed to inspect container d299a90ca58ed1e7507bc0c43df832aa99b246aa972e8d672d831dd770d63359, error: Get \"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/d299a90ca58ed1e7507bc0c43df832aa99b246aa972e8d672d831dd770d63359/json\": context canceled" providerName=docker
+time="2025-10-20T22:17:09Z" level=warning msg="Failed to inspect container 525c5fe9d2cbd937232f50253efab3e0bfcd76cb0647cd0b9584e804cd5a8f5b, error: Get \"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/525c5fe9d2cbd937232f50253efab3e0bfcd76cb0647cd0b9584e804cd5a8f5b/json\": context canceled" providerName=docker
+time="2025-10-20T22:17:09Z" level=warning msg="Failed to inspect container 22f2f9b2ad902b352bd9938361ad4a85c18738a805a2bb9a588de2e2a4156182, error: Get \"http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/22f2f9b2ad902b352bd9938361ad4a85c18738a805a2bb9a588de2e2a4156182/json\": context canceled" providerName=docker

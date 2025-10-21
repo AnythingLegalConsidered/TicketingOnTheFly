@@ -1,0 +1,24 @@
+# Dynamic Redirect Configuration
+# HTTP to HTTPS redirect
+http:
+  routers:
+    http-catch-all:
+      entryPoints:
+        - web
+      service: noop
+      rule: "HostRegexp(`{any:.*}`)"
+      middlewares:
+        - redirect-to-https
+
+  middlewares:
+    redirect-to-https:
+      redirect:
+        entryPoint: websecure
+        permanent: true
+
+# No-op service
+  services:
+    noop:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:9999"

@@ -1,0 +1,31 @@
+---
+# Development configuration with MailHog for email testing
+# Overrides for development environment
+
+version: '3.8'
+
+services:
+  # Replace Postfix with MailHog for development
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: mailhog
+    ports:
+      - "1025:1025"  # SMTP port (replaces Postfix SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailhog.rule=Host('mailhog.localhost')"
+      - "traefik.http.routers.mailhog.entrypoints=web"
+      - "traefik.http.services.mailhog.loadbalancer.server.port=8025"
+
+  # Remove Postfix service in development
+  postfix:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Postfix disabled in development - using MailHog for email testing"]
+    container_name: postfix
+    depends_on:
+      - mailhog
+    environment:
+      TZ: ${TZ:-Europe/Paris}
