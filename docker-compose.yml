@@ -1,6 +1,35 @@
 version: '3.8'
 
 services:
+  # --- Reverse Proxy : Traefik ---
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      # Ports HTTP et HTTPS - Seuls ports exposés publiquement
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Accès au socket Docker pour la découverte automatique des services
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Configuration statique de Traefik
+      - ./config/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      # Fichier de stockage des certificats Let's Encrypt
+      - ./config/traefik/acme.json:/acme.json
+    networks:
+      - ticketing_network
+    labels:
+      # Expose le dashboard de Traefik lui-même
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
+      # Authentification basique pour le dashboard
+      - "traefik.http.routers.traefik.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$LM59Ds56$$5jf2lGXS1Q3tjdxGJw31i."
+
   # --- Dépendances pour Zammad ---
   zammad-db:
     image: postgres:15
@@ -80,8 +109,6 @@ services:
       - ELASTICSEARCH_SCHEMA=http
       - REDIS_URL=redis://zammad-redis:6379
       - TZ=${TZ}
-    ports:
-      - "127.0.0.1:8082:3000"
     volumes:
       - zammad_data:/opt/zammad/
     networks:
@@ -153,12 +180,17 @@ services:
       - POSTGRESQL_USER=${POSTGRES_USER}
       - POSTGRESQL_PASS=${POSTGRES_PASSWORD}
       - REDIS_URL=redis://zammad-redis:6379
-    ports:
-      - "127.0.0.1:8081:8080"
     volumes:
       - zammad_data:/opt/zammad/
     networks:
       - ticketing_network
+    labels:
+      # Configuration Traefik pour Zammad
+      - "traefik.enable=true"
+      - "traefik.http.routers.zammad.rule=Host(`zammad.${DOMAIN}`)"
+      - "traefik.http.routers.zammad.entrypoints=websecure"
+      - "traefik.http.routers.zammad.tls.certresolver=letsencrypt"
+      - "traefik.http.services.zammad.loadbalancer.server.port=8080"
 
   # --- Base de données pour OCS Inventory ---
   ocs-db:
@@ -190,9 +222,6 @@ services:
       - OCS_DBUSER=${OCS_DB_USER}
       - OCS_DBPASS=${OCS_DB_PASSWORD}
       - TZ=${TZ}
-    ports:
-      # Port pour l'interface web et les agents. Sera géré par Traefik plus tard.
-      - "127.0.0.1:8083:80"
     volumes:
       # Volume pour les données persistantes d'OCS
       - ocs_data:/usr/share/ocsinventory-reports
@@ -200,6 +229,13 @@ services:
       - ocs_ocsreportsdata:/var/lib/ocsinventory-reports
     networks:
       - ticketing_network
+    labels:
+      # Configuration Traefik pour OCS Inventory
+      - "traefik.enable=true"
+      - "traefik.http.routers.ocs.rule=Host(`ocs.${DOMAIN}`)"
+      - "traefik.http.routers.ocs.entrypoints=websecure"
+      - "traefik.http.routers.ocs.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ocs.loadbalancer.server.port=80"
 
   # --- Plateforme de Documentation : Wiki.js ---
   wikijs:
@@ -217,13 +253,17 @@ services:
       - DB_PASS=${POSTGRES_PASSWORD}
       - DB_NAME=${WIKIJS_DB_NAME}
       - TZ=${TZ}
-    ports:
-      # Port pour l'interface web. Sera géré par Traefik plus tard.
-      - "127.0.0.1:8084:3000"
     volumes:
       - wikijs_data:/wiki/data
     networks:
       - ticketing_network
+    labels:
+      # Configuration Traefik pour Wiki.js
+      - "traefik.enable=true"
+      - "traefik.http.routers.wikijs.rule=Host(`wiki.${DOMAIN}`)"
+      - "traefik.http.routers.wikijs.entrypoints=websecure"
+      - "traefik.http.routers.wikijs.tls.certresolver=letsencrypt"
+      - "traefik.http.services.wikijs.loadbalancer.server.port=3000"
 
   # --- Service d'annuaire : OpenLDAP ---
   openldap:
@@ -261,22 +301,23 @@ services:
       - PHPLDAPADMIN_LDAP_CLIENT_TLS=false
       - PHPLDAPADMIN_HTTPS=false
       - TZ=${TZ}
-    ports:
-      # Port pour accéder à l'interface web. NE PAS exposer sur internet.
-      - "127.0.0.1:8080:80"
     depends_on:
       - openldap
     networks:
       - ticketing_network
+    labels:
+      # Configuration Traefik pour phpLDAPadmin
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpldapadmin.rule=Host(`ldap.${DOMAIN}`)"
+      - "traefik.http.routers.phpldapadmin.entrypoints=websecure"
+      - "traefik.http.routers.phpldapadmin.tls.certresolver=letsencrypt"
+      - "traefik.http.services.phpldapadmin.loadbalancer.server.port=80"
 
   # --- Collecteur de métriques : Prometheus ---
   prometheus:
     image: prom/prometheus:v2.47.1
     container_name: prometheus
     restart: unless-stopped
-    ports:
-      # Port pour l'interface web de Prometheus
-      - "127.0.0.1:9090:9090"
     volumes:
       # Montage du fichier de configuration
       - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -287,6 +328,13 @@ services:
       - '--storage.tsdb.path=/prometheus'
     networks:
       - ticketing_network
+    labels:
+      # Configuration Traefik pour Prometheus
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
 
   # --- Visualisation des métriques : Grafana ---
   grafana:
@@ -295,14 +343,17 @@ services:
     restart: unless-stopped
     environment:
       - TZ=${TZ}
-    ports:
-      # Port pour l'interface web de Grafana
-      # Note: 3000 est le port interne, mappé sur 8085 (8084 déjà pris par Wiki.js)
-      - "127.0.0.1:8085:3000"
     volumes:
       - grafana_data:/var/lib/grafana
     networks:
       - ticketing_network
+    labels:
+      # Configuration Traefik pour Grafana
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
 
   # --- Exportateur de métriques Docker : cAdvisor ---
   cadvisor:
@@ -328,11 +379,6 @@ services:
     container_name: portainer
     command: -H unix:///var/run/docker.sock
     restart: unless-stopped
-    ports:
-      # Port pour accéder à l'interface web de Portainer.
-      # NE PAS exposer ce port sur internet directement. L'accès se fera via Traefik plus tard.
-      - "127.0.0.1:9443:9443"
-      - "127.0.0.1:9000:9000"
     volumes:
       # Volume pour stocker les données de Portainer de manière persistante
       - portainer_data:/data
@@ -342,6 +388,13 @@ services:
       - ticketing_network
     environment:
       - TZ=${TZ}
+    labels:
+      # Configuration Traefik pour Portainer
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
 # --- Définition des volumes nommés ---
 # Les volumes permettent de sauvegarder les données même si les conteneurs sont supprimés.

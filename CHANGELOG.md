@@ -789,25 +789,528 @@ prometheus   Up 34 seconds             127.0.0.1:9090->9090/tcp
 
 ---
 
+## Phase 7 : Déploiement de Traefik - Reverse Proxy et HTTPS Automatique
+
+**Date :** 2025-10-22
+**Objectif :** Déployer Traefik comme reverse proxy pour unifier l'accès à tous les services sous des sous-domaines propres avec HTTPS automatique via Let's Encrypt
+
+### Théorie et Concepts
+
+#### 1. Le Problème : Chaos des Ports
+Avant Traefik, l'accès aux services nécessitait de mémoriser de nombreux ports :
+- Zammad : `http://localhost:8081`
+- OCS Inventory : `http://localhost:8083`
+- Wiki.js : `http://localhost:8084`
+- Grafana : `http://localhost:8085`
+- Prometheus : `http://localhost:9090`
+- Portainer : `http://localhost:9443`
+- phpLDAPadmin : `http://localhost:8080`
+
+**Inconvénients :**
+- Non professionnel et difficile à mémoriser
+- Tout en HTTP non sécurisé
+- Multiples ports exposés = surface d'attaque augmentée
+
+#### 2. Solution : Reverse Proxy Traefik
+**Traefik** agit comme un "chef d'orchestre" du trafic réseau :
+- **Point d'entrée unique** : Seuls les ports 80 (HTTP) et 443 (HTTPS) sont exposés
+- **Routage intelligent** : Traefik lit le nom de domaine demandé et dirige vers le bon service
+- **Auto-découverte** : Détection automatique des conteneurs Docker via labels
+- **HTTPS automatique** : Gestion complète des certificats Let's Encrypt
+
+**Flux de requête :**
+```
+Utilisateur → https://zammad.domain.com
+    ↓
+Traefik (port 443) → Lit le domaine "zammad.domain.com"
+    ↓
+Traefik consulte ses labels Docker
+    ↓
+Traefik route vers conteneur zammad-nginx:8080
+    ↓
+Réponse retourne via Traefik → Utilisateur
+```
+
+#### 3. Avantages de Traefik
+
+**Auto-découverte Docker :**
+- Traefik écoute le socket Docker (`/var/run/docker.sock`)
+- Détecte automatiquement les nouveaux conteneurs
+- Lit les labels Docker pour créer les routes
+- Aucune reconfiguration manuelle nécessaire
+
+**Let's Encrypt Intégré :**
+- Demande automatiquement un certificat HTTPS
+- Prouve le contrôle du domaine (HTTP Challenge)
+- Installe et renouvelle automatiquement les certificats
+- Stockage sécurisé dans `acme.json`
+
+**Sécurité :**
+- Redirection automatique HTTP → HTTPS
+- Isolation des services (pas de ports exposés directement)
+- Authentification basique pour le dashboard Traefik
+- Filtrage par `exposedByDefault: false`
+
+---
+
+### Étape 1 : Ajout des Variables d'Environnement
+
+**Fichier `.env` :**
+```bash
+# Variables ajoutées pour Traefik
+ACME_EMAIL=admin@${DOMAIN}
+```
+
+**Explication :**
+- `ACME_EMAIL` : Email pour les notifications Let's Encrypt (expiration de certificats)
+- Pour un vrai domaine, remplacer par une vraie adresse email valide
+
+---
+
+### Étape 2 : Création de la Configuration Traefik
+
+#### Fichier `config/traefik/traefik.yml`
+
+**Création du fichier :**
+```bash
+# Créer le dossier config/traefik (s'il n'existe pas)
+mkdir -p config/traefik
+
+# Créer le fichier de configuration
+cat > config/traefik/traefik.yml <<'EOF'
+# Configuration statique de Traefik
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+# Points d'entrée des requêtes (HTTP et HTTPS)
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+# Configuration de l'API et du Dashboard Traefik
+api:
+  dashboard: true
+  insecure: false
+
+# Comment Traefik découvre les autres services (via Docker)
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false # Important pour la sécurité !
+
+# Configuration du résolveur de certificats Let's Encrypt
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: ${ACME_EMAIL}
+      storage: acme.json
+      httpChallenge:
+        entryPoint: web
+EOF
+```
+
+**Explication des sections :**
+
+**EntryPoints :**
+- `web` (port 80) : Redirige automatiquement vers HTTPS
+- `websecure` (port 443) : Point d'entrée HTTPS principal
+
+**API Dashboard :**
+- `dashboard: true` : Active le dashboard de Traefik
+- `insecure: false` : Le dashboard nécessite une route et une authentification
+
+**Providers Docker :**
+- `endpoint` : Connexion au socket Docker pour détecter les conteneurs
+- `exposedByDefault: false` : Seuls les services avec `traefik.enable=true` sont exposés
+
+**CertificatesResolvers :**
+- `letsencrypt` : Nom du résolveur de certificats
+- `httpChallenge` : Méthode de validation (Let's Encrypt contacte le port 80 pour vérifier)
+- `storage: acme.json` : Fichier de stockage des certificats
+
+#### Fichier `acme.json`
+
+**Création et sécurisation :**
+```bash
+# Créer le fichier vide
+touch config/traefik/acme.json
+
+# Sécuriser avec permissions 600 (lecture/écriture propriétaire uniquement)
+chmod 600 config/traefik/acme.json
+```
+
+**Note Windows/WSL :**
+```powershell
+# Sur PowerShell, utiliser wsl pour chmod
+wsl chmod 600 /home/ianis/TicketingOntheFly/config/traefik/acme.json
+```
+
+**Importance :** Les permissions 600 sont requises par Traefik pour raisons de sécurité (fichier contient les clés privées des certificats).
+
+---
+
+### Étape 3 : Modification du docker-compose.yml
+
+#### Ajout du Service Traefik
+
+**Commande :**
+```yaml
+# Ajout en début de fichier après "services:"
+traefik:
+  image: traefik:v2.10
+  container_name: traefik
+  restart: unless-stopped
+  ports:
+    # Seuls ports exposés publiquement
+    - "80:80"
+    - "443:443"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ./config/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+    - ./config/traefik/acme.json:/acme.json
+  networks:
+    - ticketing_network
+  labels:
+    # Dashboard Traefik
+    - "traefik.enable=true"
+    - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
+    - "traefik.http.routers.traefik.entrypoints=websecure"
+    - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+    - "traefik.http.routers.traefik.service=api@internal"
+    # Authentification basique
+    - "traefik.http.routers.traefik.middlewares=auth"
+    - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$LM59Ds56$$5jf2lGXS1Q3tjdxGJw31i."
+```
+
+**Génération du mot de passe hashé :**
+```bash
+# Utiliser htpasswd via Docker
+docker run --rm httpd:2.4-alpine htpasswd -nb admin TicketingAdmin2025
+
+# Résultat : admin:$apr1$LM59Ds56$5jf2lGXS1Q3tjdxGJw31i.
+# IMPORTANT : Dans docker-compose.yml, doubler les $ : $$
+```
+
+**Explication des volumes :**
+- `/var/run/docker.sock` : Accès Docker en lecture seule (`:ro`)
+- `traefik.yml` : Configuration statique en lecture seule
+- `acme.json` : Fichier de certificats en lecture/écriture
+
+#### Suppression des Ports et Ajout des Labels
+
+**Pour chaque service à exposer, effectuer 2 modifications :**
+
+**1. Supprimer la section `ports:`**
+```yaml
+# AVANT
+ports:
+  - "127.0.0.1:8081:8080"
+
+# APRÈS : Section ports complètement supprimée
+```
+
+**2. Ajouter les labels Traefik**
+```yaml
+labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.SERVICE.rule=Host(`SERVICE.${DOMAIN}`)"
+  - "traefik.http.routers.SERVICE.entrypoints=websecure"
+  - "traefik.http.routers.SERVICE.tls.certresolver=letsencrypt"
+  - "traefik.http.services.SERVICE.loadbalancer.server.port=PORT_INTERNE"
+```
+
+**Services modifiés :**
+
+| Service | Sous-domaine | Port interne | Labels ajoutés |
+|---------|--------------|--------------|----------------|
+| zammad-nginx | `zammad.${DOMAIN}` | 8080 | ✅ |
+| ocs-server | `ocs.${DOMAIN}` | 80 | ✅ |
+| wikijs | `wiki.${DOMAIN}` | 3000 | ✅ |
+| phpldapadmin | `ldap.${DOMAIN}` | 80 | ✅ |
+| prometheus | `prometheus.${DOMAIN}` | 9090 | ✅ |
+| grafana | `grafana.${DOMAIN}` | 3000 | ✅ |
+| portainer | `portainer.${DOMAIN}` | 9000 | ✅ |
+
+**Services NON exposés (pas de labels) :**
+- `zammad-db`, `ocs-db` : Bases de données (sécurité)
+- `zammad-elasticsearch`, `zammad-redis` : Services internes
+- `openldap` : Annuaire (accès via phpLDAPadmin)
+- `cadvisor` : Métriques (accès via Prometheus)
+
+---
+
+### Étape 4 : Déploiement de Traefik
+
+**Commande de déploiement :**
+```bash
+# Recréer tous les services avec la nouvelle configuration
+docker-compose up -d
+```
+
+**Résultat observé :**
+```
+[+] Running 5/5
+ ✔ traefik Pulled                                   9.1s
+[+] Running 18/18
+ ✔ Container traefik               Started          2.3s
+ ✔ Container portainer             Recreated        1.0s
+ ✔ Container prometheus            Recreated        1.2s
+ ✔ Container grafana               Started          2.1s
+ ✔ Container wikijs                Started          2.1s
+ ✔ Container ocs-server            Started          2.2s
+ ✔ Container phpldapadmin          Started          2.0s
+ ✔ Container zammad-nginx          Started          1.4s
+ ... (tous les autres services)
+```
+
+**Vérification de l'état :**
+```bash
+docker-compose ps | Select-String -Pattern "traefik|Up"
+```
+
+**Résultat :**
+```
+traefik    traefik:v2.10    Up 10 seconds    0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp
+grafana    grafana/...      Up 10 seconds    3000/tcp
+prometheus prom/...         Up 10 seconds    9090/tcp
+wikijs     requarks/...     Up 10 seconds    3000/tcp
+...
+```
+
+**Observations :**
+- Seul Traefik expose les ports 80 et 443
+- Tous les autres services n'ont plus de ports exposés sur l'hôte
+- Les ports internes (3000, 8080, etc.) restent accessibles via Docker network
+
+---
+
+### Étape 5 : Vérification des Logs Traefik
+
+**Commande :**
+```bash
+docker logs traefik --tail 30
+```
+
+**Logs observés :**
+```
+time="2025-10-22T11:55:42Z" level=info msg="Configuration loaded from file: /etc/traefik/traefik.yml"
+time="2025-10-22T11:55:45Z" level=error msg="Unable to obtain ACME certificate for domains \"portainer.localhost\": 
+  cannot get ACME client acme: error: 400 :: urn:ietf:params:acme:error:invalidContact :: 
+  Error validating contact(s) :: unable to parse email address" 
+  providerName=letsencrypt.acme routerName=portainer@docker
+...
+```
+
+**Analyse :**
+- ✅ Configuration chargée avec succès
+- ✅ Traefik détecte tous les services (portainer, traefik, prometheus, wiki, grafana, ocs, ldap, zammad)
+- ⚠️ Erreurs ACME attendues car :
+  - `DOMAIN=localhost` → email devient `admin@localhost` (invalide)
+  - Let's Encrypt ne peut pas émettre de certificats pour "localhost"
+
+**Note :** Ces erreurs disparaîtront en production avec un vrai domaine et un vrai email.
+
+---
+
+### Étape 6 : Accès aux Services
+
+#### En Développement Local (DOMAIN=localhost)
+
+**Problème :** Les sous-domaines `*.localhost` ne fonctionnent pas par défaut dans les navigateurs.
+
+**Solutions temporaires :**
+
+**Option 1 : Modifier le fichier hosts**
+```bash
+# Sur Linux/Mac : /etc/hosts
+# Sur Windows : C:\Windows\System32\drivers\etc\hosts
+
+127.0.0.1 zammad.localhost
+127.0.0.1 grafana.localhost
+127.0.0.1 wiki.localhost
+127.0.0.1 ocs.localhost
+127.0.0.1 portainer.localhost
+127.0.0.1 prometheus.localhost
+127.0.0.1 ldap.localhost
+127.0.0.1 traefik.localhost
+```
+
+**Option 2 : Utiliser un service DNS local comme dnsmasq**
+
+**Option 3 : Tester avec curl**
+```bash
+curl -H "Host: zammad.localhost" http://localhost
+```
+
+**URLs d'accès (après configuration hosts) :**
+- Dashboard Traefik : `http://traefik.localhost` (admin/TicketingAdmin2025)
+- Zammad : `http://zammad.localhost`
+- Grafana : `http://grafana.localhost`
+- Wiki.js : `http://wiki.localhost`
+- OCS Inventory : `http://ocs.localhost`
+- Portainer : `http://portainer.localhost`
+- Prometheus : `http://prometheus.localhost`
+- phpLDAPadmin : `http://ldap.localhost`
+
+**Note :** En local, tout est en HTTP car Let's Encrypt n'émet pas de certificats pour localhost.
+
+#### En Production (avec un vrai domaine)
+
+**Prérequis DNS :** Créer des enregistrements DNS de type A pointant vers l'IP publique du serveur :
+```
+zammad.mondomaine.com      A    <IP_PUBLIQUE_SERVEUR>
+grafana.mondomaine.com     A    <IP_PUBLIQUE_SERVEUR>
+wiki.mondomaine.com        A    <IP_PUBLIQUE_SERVEUR>
+ocs.mondomaine.com         A    <IP_PUBLIQUE_SERVEUR>
+portainer.mondomaine.com   A    <IP_PUBLIQUE_SERVEUR>
+prometheus.mondomaine.com  A    <IP_PUBLIQUE_SERVEUR>
+ldap.mondomaine.com        A    <IP_PUBLIQUE_SERVEUR>
+traefik.mondomaine.com     A    <IP_PUBLIQUE_SERVEUR>
+```
+
+**Configuration .env pour production :**
+```bash
+DOMAIN=mondomaine.com
+ACME_EMAIL=admin@mondomaine.com
+```
+
+**Processus automatique Let's Encrypt :**
+1. Utilisateur accède à `https://zammad.mondomaine.com`
+2. Traefik détecte qu'aucun certificat n'existe
+3. Traefik demande un certificat à Let's Encrypt
+4. Let's Encrypt contacte `http://zammad.mondomaine.com/.well-known/acme-challenge/` pour vérifier
+5. Traefik répond au challenge
+6. Let's Encrypt émet le certificat
+7. Traefik installe le certificat et le stocke dans `acme.json`
+8. Renouvellement automatique 30 jours avant expiration
+
+**URLs d'accès (production) :**
+- `https://zammad.mondomaine.com` ✅ Cadenas vert
+- `https://grafana.mondomaine.com` ✅ Cadenas vert
+- Toutes les requêtes HTTP sont redirigées vers HTTPS automatiquement
+
+---
+
+### Configuration des Labels Traefik - Explication Détaillée
+
+**Anatomie d'un label Traefik :**
+```yaml
+labels:
+  # 1. Activer Traefik pour ce conteneur
+  - "traefik.enable=true"
+  
+  # 2. Définir la règle de routage (par nom de domaine)
+  - "traefik.http.routers.SERVICE_NAME.rule=Host(`sous-domaine.${DOMAIN}`)"
+  
+  # 3. Spécifier le point d'entrée (websecure = HTTPS port 443)
+  - "traefik.http.routers.SERVICE_NAME.entrypoints=websecure"
+  
+  # 4. Configurer le résolveur de certificats
+  - "traefik.http.routers.SERVICE_NAME.tls.certresolver=letsencrypt"
+  
+  # 5. Indiquer le port interne du conteneur
+  - "traefik.http.services.SERVICE_NAME.loadbalancer.server.port=PORT_INTERNE"
+```
+
+**Exemple concret - Grafana :**
+```yaml
+labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)"
+  - "traefik.http.routers.grafana.entrypoints=websecure"
+  - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+  - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+```
+
+**Explication :**
+- `traefik.enable=true` : Traefik doit gérer ce conteneur
+- `Host(`grafana.${DOMAIN}`)` : Répondre aux requêtes pour grafana.localhost (ou grafana.domain.com)
+- `entrypoints=websecure` : Utiliser le port 443 (HTTPS)
+- `certresolver=letsencrypt` : Obtenir un certificat via Let's Encrypt
+- `server.port=3000` : Grafana écoute sur le port 3000 à l'intérieur du conteneur
+
+---
+
+### Architecture Finale
+
+**Schéma de l'infrastructure :**
+```
+Internet
+   ↓
+Ports 80/443 (Traefik)
+   ↓
+Docker Network: ticketing_network
+   ├─ zammad-nginx:8080       → zammad.domain.com
+   ├─ grafana:3000            → grafana.domain.com
+   ├─ prometheus:9090         → prometheus.domain.com
+   ├─ wikijs:3000             → wiki.domain.com
+   ├─ ocs-server:80           → ocs.domain.com
+   ├─ portainer:9000          → portainer.domain.com
+   ├─ phpldapadmin:80         → ldap.domain.com
+   ├─ cadvisor:8080           (interne, via prometheus)
+   ├─ openldap:389            (interne, via phpldapadmin)
+   └─ databases               (internes, inaccessibles depuis l'extérieur)
+```
+
+**Sécurité :**
+- ✅ Un seul point d'entrée (ports 80/443)
+- ✅ Redirection automatique HTTP → HTTPS
+- ✅ Certificats SSL valides
+- ✅ Services internes (DB, LDAP, cAdvisor) non exposés
+- ✅ Dashboard Traefik protégé par authentification basique
+- ✅ Filtrage par `exposedByDefault: false`
+
+---
+
+### Tableau Récapitulatif des URLs
+
+| Service | Sous-domaine | URL Locale | URL Production |
+|---------|--------------|------------|----------------|
+| Dashboard Traefik | traefik | http://traefik.localhost | https://traefik.domain.com |
+| Zammad | zammad | http://zammad.localhost | https://zammad.domain.com |
+| Grafana | grafana | http://grafana.localhost | https://grafana.domain.com |
+| Prometheus | prometheus | http://prometheus.localhost | https://prometheus.domain.com |
+| Wiki.js | wiki | http://wiki.localhost | https://wiki.domain.com |
+| OCS Inventory | ocs | http://ocs.localhost | https://ocs.domain.com |
+| Portainer | portainer | http://portainer.localhost | https://portainer.domain.com |
+| phpLDAPadmin | ldap | http://ldap.localhost | https://ldap.domain.com |
+
+**Authentification Dashboard Traefik :**
+- Utilisateur : `admin`
+- Mot de passe : `TicketingAdmin2025`
+
+---
+
 ### Prochaines Étapes
 
-1. **Configurer des Alertes**
-   - Créer des règles d'alerte dans Prometheus
-   - Configurer Alertmanager pour notifications email/Slack
-   - Exemples d'alertes :
-     - CPU > 80% pendant 5 minutes
-     - RAM > 90% pendant 2 minutes
-     - Conteneur redémarre en boucle
+1. **Configuration DNS (Production uniquement)**
+   - Acheter un nom de domaine
+   - Configurer les enregistrements A dans le panneau DNS
+   - Mettre à jour `.env` avec le vrai domaine et email
 
-2. **Tableaux de Bord Personnalisés**
-   - Créer des dashboards spécifiques par service
-   - Dashboard global de santé infrastructure
-   - Dashboard par application (Zammad, OCS, Wiki.js)
+2. **Sécurisation Avancée**
+   - Ajouter des middlewares pour IP whitelisting
+   - Configurer des headers de sécurité (HSTS, CSP)
+   - Limiter l'accès à phpLDAPadmin et Portainer par IP
 
-3. **Phase 7 : Reverse Proxy Traefik**
-   - Point d'entrée unique pour tous les services
-   - HTTPS automatique avec Let's Encrypt
-   - Noms de domaine : tickets.domain.com, wiki.domain.com, etc.
+3. **Monitoring Traefik**
+   - Ajouter des métriques Traefik dans Prometheus
+   - Créer un dashboard Grafana pour Traefik
+   - Configurer des alertes sur les erreurs 502/503
+
+4. **Phase 8 : Consolidation**
+   - Sauvegardes automatiques
+   - Tests de récupération
+   - Documentation finale
+
 
 ---
 

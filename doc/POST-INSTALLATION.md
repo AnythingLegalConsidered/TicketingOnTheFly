@@ -4,10 +4,220 @@ Ce document décrit les étapes de configuration nécessaires après le premier 
 
 ---
 
+## ⚠️ Note Importante sur l'Accès aux Services avec Traefik
+
+**L'infrastructure TicketingOnTheFly utilise Traefik comme reverse proxy.**
+
+### En Environnement de Développement Local (DOMAIN=localhost)
+
+**Problème :** Les navigateurs ne résolvent pas automatiquement les sous-domaines `*.localhost`.
+
+**Solution 1 : Modification du fichier hosts (Recommandé)**
+
+Sur **Windows** : Éditer `C:\Windows\System32\drivers\etc\hosts` en tant qu'administrateur
+Sur **Linux/Mac** : Éditer `/etc/hosts` avec `sudo`
+
+Ajouter les lignes suivantes :
+```
+127.0.0.1 traefik.localhost
+127.0.0.1 zammad.localhost
+127.0.0.1 grafana.localhost
+127.0.0.1 prometheus.localhost
+127.0.0.1 wiki.localhost
+127.0.0.1 ocs.localhost
+127.0.0.1 portainer.localhost
+127.0.0.1 ldap.localhost
+```
+
+**Après modification**, vous pouvez accéder aux services :
+- Dashboard Traefik : `http://traefik.localhost`
+- Zammad : `http://zammad.localhost`
+- Grafana : `http://grafana.localhost`
+- Etc.
+
+**Solution 2 : Test avec curl**
+```bash
+curl -H "Host: zammad.localhost" http://localhost
+```
+
+**Note :** En local, tout est en HTTP car Let's Encrypt n'émet pas de certificats pour "localhost".
+
+### En Environnement de Production (avec un vrai domaine)
+
+**Prérequis OBLIGATOIRES :**
+
+1. **Acheter un nom de domaine** (OVH, Gandi, Cloudflare, etc.)
+
+2. **Configurer les enregistrements DNS de type A** pour chaque service :
+   ```
+   traefik.mondomaine.com      A    <IP_PUBLIQUE_DU_SERVEUR>
+   zammad.mondomaine.com       A    <IP_PUBLIQUE_DU_SERVEUR>
+   grafana.mondomaine.com      A    <IP_PUBLIQUE_DU_SERVEUR>
+   prometheus.mondomaine.com   A    <IP_PUBLIQUE_DU_SERVEUR>
+   wiki.mondomaine.com         A    <IP_PUBLIQUE_DU_SERVEUR>
+   ocs.mondomaine.com          A    <IP_PUBLIQUE_DU_SERVEUR>
+   portainer.mondomaine.com    A    <IP_PUBLIQUE_DU_SERVEUR>
+   ldap.mondomaine.com         A    <IP_PUBLIQUE_DU_SERVEUR>
+   ```
+
+3. **Modifier le fichier `.env`** :
+   ```bash
+   DOMAIN=mondomaine.com
+   ACME_EMAIL=votre-email@mondomaine.com
+   ```
+
+4. **Redémarrer les services** :
+   ```bash
+   docker-compose down
+   docker-compose up -d
+   ```
+
+5. **Vérifier les certificats** (peut prendre 1-2 minutes) :
+   ```bash
+   docker logs traefik | grep -i "certificate"
+   ```
+
+**Après configuration DNS**, tous les services seront accessibles en HTTPS avec certificats valides :
+- `https://zammad.mondomaine.com` ✅ Certificat SSL valide
+- `https://grafana.mondomaine.com` ✅ Certificat SSL valide
+- Etc.
+
+---
+
+## Traefik - Reverse Proxy et HTTPS
+
+### Accès au Dashboard Traefik
+**URL Locale :** `http://traefik.localhost` (après modification du fichier hosts)
+**URL Production :** `https://traefik.mondomaine.com`
+
+**Authentification :**
+- Utilisateur : `admin`
+- Mot de passe : `TicketingAdmin2025`
+
+### Fonctionnalités du Dashboard
+
+1. **HTTP > Routers**
+   - Voir tous les routeurs configurés
+   - Vérifier les règles de routage (Host)
+   - Statut des services backend
+
+2. **HTTP > Services**
+   - Liste des services détectés
+   - Adresses des serveurs backend
+   - État de santé (health checks)
+
+3. **HTTP > Middlewares**
+   - Middleware d'authentification basique
+   - Redirections HTTP → HTTPS
+
+### Vérification du Fonctionnement
+
+**Vérifier les logs Traefik :**
+```bash
+docker logs traefik --tail 50
+```
+
+**Vérifier la détection des services :**
+```bash
+docker logs traefik | grep -i "Creating router"
+```
+
+**Tester une route spécifique :**
+```bash
+# Test local
+curl -H "Host: zammad.localhost" http://localhost
+
+# Test production
+curl https://zammad.mondomaine.com
+```
+
+### Gestion des Certificats Let's Encrypt
+
+**Fichier de stockage :** `config/traefik/acme.json`
+
+**Vérifier les certificats obtenus :**
+```bash
+# Voir le contenu (format JSON)
+cat config/traefik/acme.json
+
+# Vérifier la taille (0 = aucun certificat)
+ls -lh config/traefik/acme.json
+```
+
+**Réinitialiser les certificats (si problème) :**
+```bash
+# Arrêter Traefik
+docker-compose stop traefik
+
+# Vider le fichier acme.json
+echo "{}" > config/traefik/acme.json
+chmod 600 config/traefik/acme.json
+
+# Redémarrer Traefik
+docker-compose up -d traefik
+
+# Suivre l'obtention des nouveaux certificats
+docker logs traefik -f
+```
+
+### Sécurisation Avancée (Optionnel)
+
+**Limiter l'accès au dashboard par IP :**
+
+Modifier `docker-compose.yml`, ajouter un middleware IP whitelist :
+```yaml
+traefik:
+  labels:
+    - "traefik.http.middlewares.ipwhitelist.ipwhitelist.sourcerange=127.0.0.1/32,192.168.1.0/24"
+    - "traefik.http.routers.traefik.middlewares=auth,ipwhitelist"
+```
+
+**Ajouter des headers de sécurité :**
+```yaml
+traefik:
+  labels:
+    - "traefik.http.middlewares.security-headers.headers.stsSeconds=31536000"
+    - "traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true"
+    - "traefik.http.middlewares.security-headers.headers.stsPreload=true"
+```
+
+### Dépannage Traefik
+
+**Service inaccessible (502 Bad Gateway) :**
+```bash
+# Vérifier que le service backend est démarré
+docker-compose ps SERVICE_NAME
+
+# Vérifier les logs du service
+docker logs SERVICE_NAME
+
+# Vérifier les logs Traefik
+docker logs traefik | grep -i SERVICE_NAME
+```
+
+**Certificat Let's Encrypt non obtenu :**
+```bash
+# Vérifier la configuration DNS
+nslookup sous-domaine.mondomaine.com
+
+# Vérifier que les ports 80/443 sont ouverts
+sudo netstat -tlnp | grep -E ':80|:443'
+
+# Vérifier les logs d'erreur ACME
+docker logs traefik | grep -i acme
+```
+
+**Redirect loop (trop de redirections) :**
+- Vérifier que le service backend ne fait pas aussi de redirection HTTPS
+- Vérifier la configuration des entrypoints dans `traefik.yml`
+
+---
+
 ## OCS Inventory - Configuration Initiale
 
 ### Accès à l'Interface
-**URL:** `http://localhost:8083/ocsreports`
+**URL Locale :** `http://ocs.localhost/ocsreports` (après modification hosts)
+**URL Production :** `https://ocs.mondomaine.com/ocsreports`
 
 ### Assistant d'Installation (Premier démarrage uniquement)
 
@@ -359,30 +569,63 @@ docker network inspect systeme-ticketing-net
 
 ---
 
-## Récapitulatif des Ports
+## Récapitulatif des URLs d'Accès
 
-| Service          | Port Local      | URL                            |
-|------------------|-----------------|--------------------------------|
-| phpLDAPadmin     | 8080            | http://localhost:8080          |
-| Zammad           | 8081            | http://localhost:8081          |
-| Zammad Rails     | 8082            | http://localhost:8082          |
-| OCS Inventory    | 8083            | http://localhost:8083/ocsreports |
-| Wiki.js          | 8084            | http://localhost:8084          |
-| Grafana          | 8085            | http://localhost:8085          |
-| Portainer (HTTP) | 9000            | http://localhost:9000          |
-| Prometheus       | 9090            | http://localhost:9090          |
-| Portainer (HTTPS)| 9443            | https://localhost:9443         |
+### Environnement Local (après modification du fichier hosts)
+
+| Service | URL Locale | Authentification |
+|---------|------------|------------------|
+| **Traefik Dashboard** | http://traefik.localhost | admin / TicketingAdmin2025 |
+| **Zammad** | http://zammad.localhost | Configuration initiale requise |
+| **Grafana** | http://grafana.localhost | admin / admin (à changer) |
+| **Prometheus** | http://prometheus.localhost | Aucune |
+| **Wiki.js** | http://wiki.localhost | Configuration initiale requise |
+| **OCS Inventory** | http://ocs.localhost/ocsreports | admin / admin (à changer) |
+| **Portainer** | http://portainer.localhost | Création compte à la 1ère connexion |
+| **phpLDAPadmin** | http://ldap.localhost | cn=admin,dc=localhost / LDAP_ADMIN_PASSWORD |
+
+### Environnement Production (avec domaine configuré)
+
+| Service | URL Production | Protocole |
+|---------|----------------|-----------|
+| **Traefik Dashboard** | https://traefik.mondomaine.com | HTTPS + Auth |
+| **Zammad** | https://zammad.mondomaine.com | HTTPS |
+| **Grafana** | https://grafana.mondomaine.com | HTTPS |
+| **Prometheus** | https://prometheus.mondomaine.com | HTTPS |
+| **Wiki.js** | https://wiki.mondomaine.com | HTTPS |
+| **OCS Inventory** | https://ocs.mondomaine.com/ocsreports | HTTPS |
+| **Portainer** | https://portainer.mondomaine.com | HTTPS |
+| **phpLDAPadmin** | https://ldap.mondomaine.com | HTTPS |
+
+**Note :** Tous les certificats SSL sont obtenus automatiquement via Let's Encrypt.
+
+### Anciens Ports (Avant Traefik - Obsolètes)
+
+**⚠️ Ces ports ne sont PLUS exposés depuis l'implémentation de Traefik :**
+
+| Service (Obsolète) | Ancien Port | Nouveau Accès |
+|--------------------|-------------|---------------|
+| phpLDAPadmin | 8080 | http://ldap.localhost |
+| Zammad | 8081 | http://zammad.localhost |
+| Zammad Rails | 8082 | (interne uniquement) |
+| OCS Inventory | 8083 | http://ocs.localhost |
+| Wiki.js | 8084 | http://wiki.localhost |
+| Grafana | 8085 | http://grafana.localhost |
+| Portainer (HTTP) | 9000 | http://portainer.localhost |
+| Prometheus | 9090 | http://prometheus.localhost |
+| Portainer (HTTPS) | 9443 | http://portainer.localhost |
 
 ---
 
 ## Ordre de Configuration Recommandé
 
-1. ✅ **Portainer** - Pour surveiller l'état de tous les services
-2. ✅ **phpLDAPadmin** - Créer la structure LDAP et les premiers utilisateurs
-3. ✅ **OCS Inventory** - Configuration initiale et sécurisation
-4. ✅ **Zammad** - Configuration et intégration LDAP
-5. ✅ **Wiki.js** - Configuration et intégration LDAP
-6. ✅ **Prometheus & Grafana** - Ajouter la datasource Prometheus et importer les dashboards
+1. ✅ **Traefik** - Configurer le domaine et vérifier les routes (Dashboard)
+2. ✅ **Portainer** - Pour surveiller l'état de tous les services
+3. ✅ **phpLDAPadmin** - Créer la structure LDAP et les premiers utilisateurs
+4. ✅ **OCS Inventory** - Configuration initiale et sécurisation
+5. ✅ **Zammad** - Configuration et intégration LDAP
+6. ✅ **Wiki.js** - Configuration et intégration LDAP
+7. ✅ **Prometheus & Grafana** - Ajouter la datasource Prometheus et importer les dashboards
 
 ---
 
