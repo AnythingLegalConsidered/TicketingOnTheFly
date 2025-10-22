@@ -85,6 +85,11 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_SCHEMA=http
       - REDIS_URL=redis://zammad-redis:6379
+      - SMTP_ADDRESS=${ZAMMAD_SMTP_HOST}
+      - SMTP_PORT=${ZAMMAD_SMTP_PORT}
+      - SMTP_USER=${ZAMMAD_SMTP_USER}
+      - SMTP_PASS=${ZAMMAD_SMTP_PASSWORD}
+      - SMTP_DOMAIN=${ZAMMAD_SMTP_DOMAIN}
       - TZ=${TZ}
     volumes:
       - zammad_data:/opt/zammad/
@@ -108,6 +113,11 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_SCHEMA=http
       - REDIS_URL=redis://zammad-redis:6379
+      - SMTP_ADDRESS=${ZAMMAD_SMTP_HOST}
+      - SMTP_PORT=${ZAMMAD_SMTP_PORT}
+      - SMTP_USER=${ZAMMAD_SMTP_USER}
+      - SMTP_PASS=${ZAMMAD_SMTP_PASSWORD}
+      - SMTP_DOMAIN=${ZAMMAD_SMTP_DOMAIN}
       - TZ=${TZ}
     volumes:
       - zammad_data:/opt/zammad/
@@ -131,6 +141,11 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_SCHEMA=http
       - REDIS_URL=redis://zammad-redis:6379
+      - SMTP_ADDRESS=${ZAMMAD_SMTP_HOST}
+      - SMTP_PORT=${ZAMMAD_SMTP_PORT}
+      - SMTP_USER=${ZAMMAD_SMTP_USER}
+      - SMTP_PASS=${ZAMMAD_SMTP_PASSWORD}
+      - SMTP_DOMAIN=${ZAMMAD_SMTP_DOMAIN}
       - TZ=${TZ}
     volumes:
       - zammad_data:/opt/zammad/
@@ -154,6 +169,11 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_SCHEMA=http
       - REDIS_URL=redis://zammad-redis:6379
+      - SMTP_ADDRESS=${ZAMMAD_SMTP_HOST}
+      - SMTP_PORT=${ZAMMAD_SMTP_PORT}
+      - SMTP_USER=${ZAMMAD_SMTP_USER}
+      - SMTP_PASS=${ZAMMAD_SMTP_PASSWORD}
+      - SMTP_DOMAIN=${ZAMMAD_SMTP_DOMAIN}
       - TZ=${TZ}
     volumes:
       - zammad_data:/opt/zammad/
@@ -372,6 +392,21 @@ services:
       - /dev/disk/:/dev/disk:ro
     networks:
       - ticketing_network
+
+  # --- Serveur SMTP de test : MailHog ---
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    restart: unless-stopped
+    networks:
+      - ticketing_network
+    labels:
+      # Configuration Traefik pour MailHog
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailhog.rule=Host(`mailhog.${DOMAIN}`)"
+      - "traefik.http.routers.mailhog.entrypoints=websecure"
+      - "traefik.http.routers.mailhog.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mailhog.loadbalancer.server.port=8025"
 
   # --- Service de gestion Docker : Portainer ---
   portainer:

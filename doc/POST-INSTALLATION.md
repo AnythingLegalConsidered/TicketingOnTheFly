@@ -27,6 +27,7 @@ Ajouter les lignes suivantes :
 127.0.0.1 ocs.localhost
 127.0.0.1 portainer.localhost
 127.0.0.1 ldap.localhost
+127.0.0.1 mailhog.localhost
 ```
 
 **Après modification**, vous pouvez accéder aux services :
@@ -58,6 +59,7 @@ curl -H "Host: zammad.localhost" http://localhost
    ocs.mondomaine.com          A    <IP_PUBLIQUE_DU_SERVEUR>
    portainer.mondomaine.com    A    <IP_PUBLIQUE_DU_SERVEUR>
    ldap.mondomaine.com         A    <IP_PUBLIQUE_DU_SERVEUR>
+   mailhog.mondomaine.com      A    <IP_PUBLIQUE_DU_SERVEUR>
    ```
 
 3. **Modifier le fichier `.env`** :
@@ -569,6 +571,125 @@ docker network inspect systeme-ticketing-net
 
 ---
 
+## MailHog - Serveur SMTP de Test
+
+### Accès à l'Interface
+**URL Locale :** `http://mailhog.localhost`
+**URL Production :** `https://mailhog.mondomaine.com`
+
+**Authentification :** Aucune
+
+### Description
+
+MailHog est un serveur SMTP factice qui capture tous les emails envoyés par les applications sans les transmettre réellement. Parfait pour le développement et les tests.
+
+### Fonctionnement
+
+1. **Les applications envoient des emails** (Zammad, Grafana, etc.)
+2. **MailHog intercepte** tous les emails sur le port SMTP 1025
+3. **Les emails sont affichés** dans l'interface web sur le port 8025
+4. **Aucun email n'est envoyé** vers l'extérieur
+
+### Utilisation
+
+#### Visualiser les Emails Capturés
+
+1. Accéder à `http://mailhog.localhost`
+2. L'interface affiche la liste de tous les emails reçus
+3. Cliquer sur un email pour voir :
+   - Expéditeur (From)
+   - Destinataire(s) (To)
+   - Sujet (Subject)
+   - Contenu HTML et texte brut
+
+#### Tester l'Envoi depuis Zammad
+
+1. Se connecter à Zammad : `http://zammad.localhost`
+2. Créer un nouveau ticket
+3. Ajouter une réponse à un ticket existant
+4. Vérifier immédiatement dans MailHog : `http://mailhog.localhost`
+5. L'email de notification apparaît instantanément
+
+#### Fonctionnalités de l'Interface
+
+- **Search** : Rechercher par expéditeur, destinataire ou sujet
+- **Clear** : Supprimer tous les emails
+- **Preview** : Visualiser le rendu HTML
+- **Source** : Voir le code source brut de l'email
+- **MIME** : Examiner la structure MIME
+
+### Configuration SMTP dans Zammad
+
+La configuration est automatique via les variables d'environnement :
+
+```bash
+# .env
+ZAMMAD_SMTP_HOST=mailhog
+ZAMMAD_SMTP_PORT=1025
+ZAMMAD_SMTP_USER=
+ZAMMAD_SMTP_PASSWORD=
+ZAMMAD_SMTP_DOMAIN=localhost
+```
+
+Ces variables sont injectées automatiquement dans tous les services Zammad.
+
+### Transition vers Production
+
+**⚠️ Important :** MailHog ne doit PAS être utilisé en production.
+
+**En production, modifier `.env` :**
+```bash
+# Exemple avec SendGrid
+ZAMMAD_SMTP_HOST=smtp.sendgrid.net
+ZAMMAD_SMTP_PORT=587
+ZAMMAD_SMTP_USER=apikey
+ZAMMAD_SMTP_PASSWORD=SG.votre_cle_api_sendgrid
+ZAMMAD_SMTP_DOMAIN=mondomaine.com
+```
+
+**Ou avec Gmail :**
+```bash
+ZAMMAD_SMTP_HOST=smtp.gmail.com
+ZAMMAD_SMTP_PORT=587
+ZAMMAD_SMTP_USER=notifications@gmail.com
+ZAMMAD_SMTP_PASSWORD=votre_mot_de_passe_application
+ZAMMAD_SMTP_DOMAIN=gmail.com
+```
+
+**Désactiver MailHog en production :**
+```yaml
+# docker-compose.yml
+# mailhog:
+#   # Service désactivé en production
+```
+
+### Dépannage
+
+#### Aucun email n'apparaît dans MailHog
+
+```bash
+# Vérifier que MailHog est démarré
+docker-compose ps mailhog
+
+# Vérifier les logs de MailHog
+docker logs mailhog
+
+# Vérifier la configuration SMTP de Zammad
+docker-compose exec zammad-railsserver env | grep SMTP
+```
+
+#### MailHog inaccessible
+
+```bash
+# Vérifier que Traefik a détecté MailHog
+docker logs traefik | grep -i mailhog
+
+# Vérifier le réseau
+docker network inspect systeme-ticketing-net | grep mailhog
+```
+
+---
+
 ## Récapitulatif des URLs d'Accès
 
 ### Environnement Local (après modification du fichier hosts)
@@ -583,6 +704,7 @@ docker network inspect systeme-ticketing-net
 | **OCS Inventory** | http://ocs.localhost/ocsreports | admin / admin (à changer) |
 | **Portainer** | http://portainer.localhost | Création compte à la 1ère connexion |
 | **phpLDAPadmin** | http://ldap.localhost | cn=admin,dc=localhost / LDAP_ADMIN_PASSWORD |
+| **MailHog** | http://mailhog.localhost | Aucune |
 
 ### Environnement Production (avec domaine configuré)
 
@@ -596,6 +718,7 @@ docker network inspect systeme-ticketing-net
 | **OCS Inventory** | https://ocs.mondomaine.com/ocsreports | HTTPS |
 | **Portainer** | https://portainer.mondomaine.com | HTTPS |
 | **phpLDAPadmin** | https://ldap.mondomaine.com | HTTPS |
+| **MailHog** | https://mailhog.mondomaine.com | HTTPS (dev uniquement) |
 
 **Note :** Tous les certificats SSL sont obtenus automatiquement via Let's Encrypt.
 

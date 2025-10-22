@@ -1314,3 +1314,252 @@ Docker Network: ticketing_network
 
 ---
 
+
+
+## Phase 8 : Outils de Gestion et Développement - MailHog et Portainer
+
+**Date :** 2025-10-22
+**Objectif :** Finaliser les outils qui facilitent la gestion quotidienne et le débogage : finaliser Portainer accessible via Traefik et ajouter MailHog pour capturer les emails de test
+
+### Théorie et Concepts
+
+#### 1. Le Problème des Tests Email
+
+Les applications comme Zammad envoient de nombreux emails :
+- Création de ticket
+- Réponses aux tickets
+- Notifications aux agents
+- Alertes système
+
+**Problèmes en développement :**
+-  Configurer un vrai serveur SMTP est complexe
+-  Risque d'envoyer des emails de test à de vrais utilisateurs
+-  Les emails peuvent être marqués comme spam
+-  Difficile de vérifier le contenu sans accéder à une vraie boîte email
+
+#### 2. Solution : MailHog - Serveur SMTP Factice
+
+**MailHog** est un "piège à emails" :
+- Intercepte tous les emails envoyés
+- N'envoie **JAMAIS** les emails vers l'extérieur
+- Affiche les emails capturés dans une interface web
+- Parfait pour le développement et les tests
+
+**Avantages :**
+-  Aucun risque de spam accidentel
+-  Visualisation immédiate du rendu email
+-  Vérification des destinataires et du contenu
+-  Test de toute la chaîne d'envoi sans configuration SMTP complexe
+
+**Fonctionnement :**
+\\\
+Application (Zammad)  Envoie email au SMTP (mailhog:1025)
+    
+MailHog capture l'email
+    
+Administrateur visualise via http://mailhog.localhost:8025
+\\\
+
+#### 3. Portainer : Interface de Gestion Visuelle
+
+**Portainer** a été déployé dès la Phase 1, maintenant il est complètement intégré :
+- Accessible via Traefik : \http://portainer.localhost\
+- Gestion visuelle de tous les conteneurs
+- Consultation des logs en temps réel
+- Accès terminal aux conteneurs
+- Gestion des volumes et réseaux
+
+---
+
+### Étape 1 : Ajout des Variables d'Environnement SMTP
+
+**Fichier \.env\ modifié :**
+\\\ash
+# --- Configuration SMTP pour Zammad (vers MailHog) ---
+# En production, remplacer par un vrai serveur SMTP
+ZAMMAD_SMTP_HOST=mailhog
+ZAMMAD_SMTP_PORT=1025
+ZAMMAD_SMTP_USER=
+ZAMMAD_SMTP_PASSWORD=
+ZAMMAD_SMTP_DOMAIN=\
+\\\
+
+**Explication des variables :**
+- \ZAMMAD_SMTP_HOST=mailhog\ : Nom du service Docker (résolution DNS automatique)
+- \ZAMMAD_SMTP_PORT=1025\ : Port SMTP de MailHog (standard : 1025)
+- \ZAMMAD_SMTP_USER\ et \ZAMMAD_SMTP_PASSWORD\ : Vides (MailHog ne requiert pas d'authentification)
+- \ZAMMAD_SMTP_DOMAIN=\\ : Domaine utilisé dans les emails (\From: notifications@localhost\)
+
+**Pour la production :**
+```bash
+# Exemple avec un vrai serveur SMTP
+ZAMMAD_SMTP_HOST=smtp.gmail.com
+ZAMMAD_SMTP_PORT=587
+ZAMMAD_SMTP_USER=notifications@mondomaine.com
+ZAMMAD_SMTP_PASSWORD=MonMotDePasseSecurise
+ZAMMAD_SMTP_DOMAIN=mondomaine.com
+```
+
+---
+
+### Ã‰tape 2 : Ajout du Service MailHog
+
+**Service ajoutÃ© au `docker-compose.yml` :**
+```yaml
+# --- Serveur SMTP de test : MailHog ---
+mailhog:
+  image: mailhog/mailhog:latest
+  container_name: mailhog
+  restart: unless-stopped
+  networks:
+    - ticketing_network
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.mailhog.rule=Host(`mailhog.${DOMAIN}`)"
+    - "traefik.http.routers.mailhog.entrypoints=websecure"
+    - "traefik.http.routers.mailhog.tls.certresolver=letsencrypt"
+    - "traefik.http.services.mailhog.loadbalancer.server.port=8025"
+```
+
+**CaractÃ©ristiques :**
+- **Ports internes :**  `1025` (SMTP), `8025` (Interface web)
+- **Exposition :** Via Traefik uniquement
+- **Stockage :** En mÃ©moire (pas de volumes)
+
+---
+
+### Ã‰tape 3 : Configuration SMTP dans Zammad
+
+**Variables SMTP ajoutÃ©es Ã  tous les services Zammad :**
+- `zammad-init`
+- `zammad-railsserver`
+- `zammad-websocket`
+- `zammad-scheduler`
+
+**Variables ajoutÃ©es :**
+```yaml
+environment:
+  - SMTP_ADDRESS=${ZAMMAD_SMTP_HOST}
+  - SMTP_PORT=${ZAMMAD_SMTP_PORT}
+  - SMTP_USER=${ZAMMAD_SMTP_USER}
+  - SMTP_PASS=${ZAMMAD_SMTP_PASSWORD}
+  - SMTP_DOMAIN=${ZAMMAD_SMTP_DOMAIN}
+```
+
+---
+
+### Ã‰tape 4 : DÃ©ploiement
+
+**Commande :**
+```bash
+docker-compose up -d
+```
+
+**RÃ©sultat :**
+```
+[+] Running 1/1
+ âœ” mailhog Pulled                                   2.5s
+[+] Running 19/19
+ âœ” Container mailhog               Created          0.1s
+ âœ” Container zammad-init           Started          1.2s
+ âœ” Container zammad-railsserver    Started          1.3s
+ ... (services Zammad recrÃ©Ã©s avec nouvelles variables)
+```
+
+---
+
+### Ã‰tape 5 : VÃ©rification
+
+**Logs MailHog :**
+```bash
+docker logs mailhog --tail 20
+```
+
+**RÃ©sultat :**
+```
+2025/10/22 12:05:01 Using in-memory storage
+2025/10/22 12:05:01 [SMTP] Binding to address: 0.0.0.0:1025
+2025/10/22 12:05:01 Serving under http://0.0.0.0:8025/
+```
+
+âœ… MailHog opÃ©rationnel sur les ports 1025 (SMTP) et 8025 (web)
+
+**DÃ©tection Traefik :**
+```bash
+docker logs traefik | Select-String -Pattern "mailhog"
+```
+
+âœ… Routeur `mailhog@docker` crÃ©Ã© avec rÃ¨gle `Host(mailhog.localhost)`
+
+---
+
+### URLs d'AccÃ¨s
+
+| Service | URL Locale | URL Production |
+|---------|------------|----------------|
+| **MailHog** | http://mailhog.localhost | https://mailhog.mondomaine.com |
+| **Portainer** | http://portainer.localhost | https://portainer.mondomaine.com |
+
+---
+
+### Test de l'Envoi d'Email
+
+**ProcÃ©dure :**
+1. AccÃ©der Ã  MailHog : `http://mailhog.localhost`
+2. AccÃ©der Ã  Zammad : `http://zammad.localhost`
+3. CrÃ©er un ticket ou ajouter une rÃ©ponse
+4. VÃ©rifier la rÃ©ception instantanÃ©e dans MailHog
+5. Examiner l'email : expÃ©diteur, destinataire, sujet, contenu HTML
+
+---
+
+### Architecture Mise Ã  Jour
+
+```
+Internet
+   â†“
+Ports 80/443 (Traefik)
+   â†“
+Docker Network: ticketing_network
+   â”œâ”€ mailhog:8025         â†’ mailhog.domain.com (NOUVEAU)
+   â”‚    â†‘ Port SMTP: 1025
+   â”‚    â†‘ Zammad â†’ mailhog:1025
+   â”œâ”€ portainer:9000       â†’ portainer.domain.com
+   â”œâ”€ zammad-nginx:8080    â†’ zammad.domain.com
+   â””â”€ ... (autres services)
+```
+
+---
+
+### Transition Production
+
+**Remplacer MailHog par un vrai SMTP en production :**
+
+```bash
+# .env (production)
+ZAMMAD_SMTP_HOST=smtp.sendgrid.net
+ZAMMAD_SMTP_PORT=587
+ZAMMAD_SMTP_USER=apikey
+ZAMMAD_SMTP_PASSWORD=SG.xxxxxxxxxxxx
+ZAMMAD_SMTP_DOMAIN=mondomaine.com
+```
+
+**DÃ©sactiver MailHog :**
+```yaml
+# docker-compose.yml
+# mailhog:
+#   # Service dÃ©sactivÃ© en production
+```
+
+---
+
+### Prochaines Ã‰tapes
+
+1. **Phase 9 : Consolidation Finale**
+   - Sauvegardes automatiques
+   - Scripts de restauration
+   - Tests de rÃ©cupÃ©ration
+   - Documentation finale
+   - Guide de maintenance
+
+---
