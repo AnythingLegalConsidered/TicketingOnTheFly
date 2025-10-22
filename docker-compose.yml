@@ -81,7 +81,7 @@ services:
       - REDIS_URL=redis://zammad-redis:6379
       - TZ=${TZ}
     ports:
-      - "8082:3000"
+      - "127.0.0.1:8082:3000"
     volumes:
       - zammad_data:/opt/zammad/
     networks:
@@ -154,7 +154,7 @@ services:
       - POSTGRESQL_PASS=${POSTGRES_PASSWORD}
       - REDIS_URL=redis://zammad-redis:6379
     ports:
-      - "8081:8080"
+      - "127.0.0.1:8081:8080"
     volumes:
       - zammad_data:/opt/zammad/
     networks:
@@ -197,7 +197,7 @@ services:
       - TZ=${TZ}
     ports:
       # Port pour accéder à l'interface web. NE PAS exposer sur internet.
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     depends_on:
       - openldap
     networks:
@@ -212,8 +212,8 @@ services:
     ports:
       # Port pour accéder à l'interface web de Portainer.
       # NE PAS exposer ce port sur internet directement. L'accès se fera via Traefik plus tard.
-      - "9443:9443"
-      - "9000:9000"
+      - "127.0.0.1:9443:9443"
+      - "127.0.0.1:9000:9000"
     volumes:
       # Volume pour stocker les données de Portainer de manière persistante
       - portainer_data:/data
