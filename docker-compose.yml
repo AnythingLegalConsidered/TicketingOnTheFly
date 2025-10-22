@@ -159,6 +159,48 @@ services:
       - zammad_data:/opt/zammad/
     networks:
       - ticketing_network
+
+  # --- Base de données pour OCS Inventory ---
+  ocs-db:
+    image: mariadb:10.11
+    container_name: ocs-db
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${OCS_DB_NAME}
+      - MARIADB_USER=${OCS_DB_USER}
+      - MARIADB_PASSWORD=${OCS_DB_PASSWORD}
+      - TZ=${TZ}
+    volumes:
+      - ocs_db_data:/var/lib/mysql
+    networks:
+      - ticketing_network
+
+  # --- Serveur d'inventaire : OCS Inventory ---
+  ocs-server:
+    image: ocsinventory/ocsinventory-docker-image:latest
+    container_name: ocs-server
+    restart: unless-stopped
+    depends_on:
+      - ocs-db
+    environment:
+      - OCS_DBSERVER_READ=ocs-db
+      - OCS_DBSERVER_WRITE=ocs-db
+      - OCS_DBNAME=${OCS_DB_NAME}
+      - OCS_DBUSER=${OCS_DB_USER}
+      - OCS_DBPASS=${OCS_DB_PASSWORD}
+      - TZ=${TZ}
+    ports:
+      # Port pour l'interface web et les agents. Sera géré par Traefik plus tard.
+      - "127.0.0.1:8083:80"
+    volumes:
+      # Volume pour les données persistantes d'OCS
+      - ocs_data:/usr/share/ocsinventory-reports
+      - ocs_perlcomdata:/etc/ocsinventory-reports
+      - ocs_ocsreportsdata:/var/lib/ocsinventory-reports
+    networks:
+      - ticketing_network
+
   # --- Service d'annuaire : OpenLDAP ---
   openldap:
     image: osixia/openldap:1.5.0
@@ -233,6 +275,10 @@ volumes:
   postgres_data:
   elasticsearch_data:
   zammad_data:
+  ocs_db_data:
+  ocs_data:
+  ocs_perlcomdata:
+  ocs_ocsreportsdata:
 
 # --- Définition des réseaux ---
 # Créer un réseau dédié permettra à nos conteneurs de communiquer de manière isolée.
