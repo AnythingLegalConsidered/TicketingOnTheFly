@@ -1,305 +1,491 @@
-# TicketingOnTheFly 🎫
+﻿# TicketingOnTheFly 
 
-Système de ticketing intégré avec gestion des identités, documentation, supervision et inventaire.
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## 📋 Vue d'ensemble
+**Système de ticketing intégré professionnel avec gestion centralisée des identités, documentation, supervision et inventaire.**
 
-Ce projet met en place une infrastructure complète de gestion de support IT incluant :
-- **Zammad** : Plateforme de ticketing
-- **OpenLDAP** : Annuaire centralisé des utilisateurs
-- **Wiki.js** : Documentation interne
-- **Prometheus & Grafana** : Supervision et métriques
-- **OCS Inventory** : Inventaire du parc informatique
-- **Traefik** : Reverse proxy et gestion SSL
-- **Portainer** : Gestion de l'environnement Docker
+---
 
-## 🏗️ Architecture
+##  Vue d'Ensemble
 
-L'infrastructure utilise Docker et Docker Compose pour conteneuriser tous les services, garantissant :
-- ✅ Isolation des applications
-- ✅ Reproductibilité de l'environnement
-- ✅ Déploiement simplifié
-- ✅ Infrastructure as Code (IaC)
+**TicketingOnTheFly** est une infrastructure complète open-source pour la gestion de support IT, déployable en quelques minutes grâce à Docker. Le projet intègre 9 services essentiels qui communiquent ensemble pour offrir une solution professionnelle clé-en-main.
 
-## 📁 Structure du projet
+###  Objectifs du Projet
+
+-  **Installation rapide** : Déploiement automatisé en une commande
+-  **Infrastructure as Code** : Configuration versionnable et reproductible  
+-  **Authentification centralisée** : Single Sign-On partiel via OpenLDAP
+-  **Sécurité renforcée** : HTTPS automatique, isolation des services
+-  **Supervision intégrée** : Métriques et alerting temps réel
+-  **Production-ready** : Stratégie de sauvegarde et haute disponibilité
+
+---
+
+##  Architecture des Services
+
+| Service | Rôle | Port(s) |
+|---------|------|---------|
+| **Zammad** | Plateforme de ticketing et base de connaissances | 8081 |
+| **OpenLDAP** | Annuaire centralisé des utilisateurs (LDAP) | 389 |
+| **phpLDAPadmin** | Interface web de gestion LDAP | 8080 |
+| **Wiki.js** | Documentation technique interne | - |
+| **OCS Inventory** | Inventaire automatisé du parc informatique | - |
+| **Prometheus** | Collecte et stockage des métriques | 9090 |
+| **Grafana** | Tableaux de bord et visualisation | 3000 |
+| **Traefik** | Reverse proxy, routage et SSL automatique | 80, 443 |
+| **Portainer** | Gestion de l'environnement Docker | 9443 |
+| **MailHog** | Serveur SMTP de test (développement) | 8025 |
+
+**Dépendances :**
+- PostgreSQL (Zammad, Wiki.js)
+- MariaDB (OCS Inventory)
+- Redis (Zammad cache)
+- Elasticsearch (Zammad search)
+- cAdvisor (métriques Docker)
+
+###  Schéma d'Architecture
 
 ```
-TicketingOntheFly/
-├── config/                 # Fichiers de configuration
-│   └── traefik/           # Configuration Traefik
-├── data/                   # Données persistantes des services
-│   ├── portainer/
-│   ├── zammad/
-│   ├── openldap/
-│   ├── wikijs/
-│   ├── prometheus/
-│   └── grafana/
-├── .env                    # Variables d'environnement (IMPORTANT: ne pas committer!)
-├── docker-compose.yml      # Définition de tous les services
-└── README.md              # Ce fichier
+                                Internet
+                                    |
+                                    v
+                            +---------------+
+                            |    Traefik    |   Reverse Proxy + SSL
+                            |  (80/443)     |
+                            +-------+-------+
+                                    |
+            +-----------------------+-----------------------+
+            |                       |                       |
+            v                       v                       v
+    +---------------+       +---------------+       +---------------+
+    |    Zammad     |       |    Wiki.js    |       |     OCS       |
+    | (Ticketing)   |       |(Documentation)|       |  (Inventaire) |
+    +-------+-------+       +-------+-------+       +-------+-------+
+            |                       |                       |
+            v                       v                       v
+    +---------------+       +---------------+       +---------------+
+    |   PostgreSQL  |       |     LDAP      |       |    MariaDB    |
+    +---------------+       +---------------+       +---------------+
+                                    ^
+                                    |
+                        +-----------+-----------+
+                        |                       |
+                   Grafana                  Portainer
+                (Supervision)            (Gestion Docker)
 ```
 
-## 🚀 Prérequis
+---
 
-- **Docker** (version 20.10 ou supérieure)
-- **Docker Compose** (version 2.0 ou supérieure)
+##  Guide de Déploiement Rapide
 
-### Vérification de l'installation
+###  Prérequis
+
+- **Système d'exploitation** : Linux (Debian, Ubuntu, CentOS...) ou WSL2
+- **Docker** : Version 20.10 ou supérieure
+- **Docker Compose** : Version 2.0 ou supérieure
+- **Ressources recommandées** :
+  - CPU : 4 cœurs minimum
+  - RAM : 8 GB minimum (16 GB recommandé)
+  - Disque : 50 GB d'espace disponible
+
+#### Vérification des prérequis
 
 ```bash
-docker --version
-docker-compose --version
+docker --version        # Doit afficher >= 20.10
+docker-compose --version  # Doit afficher >= 2.0
+docker info             # Vérifie que Docker fonctionne
 ```
 
-## ⚙️ Configuration initiale
+###  Installation Automatisée (Recommandée)
 
-### 1. Configurer le fichier `.env`
-
-Le fichier `.env` contient toutes les variables de configuration sensibles. **Personnalisez-le avant le premier lancement** :
+**Déploiement complet en 3 étapes :**
 
 ```bash
-# Modifiez les valeurs suivantes dans le fichier .env :
-DOMAIN=votre-domaine.com          # Votre nom de domaine
-TZ=Europe/Paris                    # Votre fuseau horaire
-POSTGRES_PASSWORD=VotreMotDePasse  # Un mot de passe fort pour PostgreSQL
+# 1. Cloner le projet
+git clone https://github.com/VotreNom/TicketingOntheFly.git
+cd TicketingOntheFly
+
+# 2. Configurer l'environnement
+cp .env.example .env
+nano .env  # Éditez les variables (domaine, mots de passe)
+
+# 3. Lancer le script d'initialisation
+./init.sh
 ```
 
-### 2. Lancer l'infrastructure
+Le script `init.sh` effectue automatiquement :
+-  Vérification des prérequis (Docker, Docker Compose)
+-  Création de l'arborescence de dossiers
+-  Création des fichiers de configuration nécessaires
+-  Téléchargement des images Docker
+-  Démarrage de tous les services
+
+**Temps de déploiement estimé** : 10-15 minutes (selon votre connexion internet)
+
+###  Installation Manuelle
+
+Si vous préférez contrôler chaque étape :
 
 ```bash
-# Depuis la racine du projet
+# 1. Créer le fichier .env
+cp .env.example .env
+nano .env
+
+# 2. Créer les répertoires nécessaires
+mkdir -p config/{traefik,prometheus}
+mkdir -p data/{zammad,openldap,wikijs,grafana,prometheus,portainer}
+touch config/traefik/acme.json && chmod 600 config/traefik/acme.json
+
+# 3. Télécharger les images
+docker-compose pull
+
+# 4. Démarrer les services
 docker-compose up -d
-```
 
-Cette commande va :
-- Télécharger les images Docker nécessaires
-- Créer les volumes de données persistantes
-- Créer le réseau Docker dédié
-- Démarrer tous les conteneurs en arrière-plan
-
-### 3. Vérifier l'état des conteneurs
-
-```bash
+# 5. Vérifier l'état
 docker-compose ps
 ```
 
-Tous les services doivent être dans l'état "Up" ou "running".
+---
 
-## 🌐 Accès aux services
+##  Accès aux Services
 
-### Portainer (Gestion Docker)
-- **URL** : https://localhost:9443
-- **Premier accès** : Créez un compte administrateur (conservez bien le mot de passe!)
-- **Description** : Interface web pour gérer vos conteneurs Docker
+###  En Développement (Local)
 
-### phpLDAPadmin (Gestion OpenLDAP)
-- **URL** : http://localhost:8080
-- **Login DN** : `cn=admin,dc=localhost` (adaptez selon votre domaine dans `.env`)
-- **Mot de passe** : Celui défini dans `LDAP_ADMIN_PASSWORD` du fichier `.env`
-- **Description** : Interface web pour gérer l'annuaire LDAP (utilisateurs et groupes)
+| Service | URL | Identifiants par défaut |
+|---------|-----|------------------------|
+| Zammad | `http://zammad.localhost` | À créer au 1er accès |
+| OCS Inventory | `http://ocs.localhost` | `admin` / `admin`  |
+| Wiki.js | `http://wiki.localhost` | À créer au 1er accès |
+| Grafana | `http://grafana.localhost` | `admin` / `admin`  |
+| Portainer | `http://portainer.localhost` | À créer au 1er accès |
+| MailHog | `http://mailhog.localhost` | Aucune authentification |
+| phpLDAPadmin | `http://ldap.localhost` | `cn=admin,dc=localhost` / (voir `.env`) |
+| Prometheus | `http://prometheus.localhost` | Aucune authentification |
+| Traefik Dashboard | `http://traefik.localhost` | `admin` / (voir `docker-compose.yml`) |
 
-> ⚠️ **Note de sécurité** : Le certificat SSL de Portainer est auto-signé. Votre navigateur affichera un avertissement - c'est normal pour un environnement de développement local.
+ **Changez OBLIGATOIREMENT les mots de passe par défaut après le premier accès !**
 
-### Zammad (Ticketing)
-- **URL** : http://localhost:8081
-- **Premier accès** : Suivez l'assistant pour créer le compte administrateur Zammad
-- **Note** : Le premier démarrage peut prendre 5–10 minutes (initialisation DB + indexation Elasticsearch)
+###  En Production
 
-## 🔧 Commandes utiles
+| Service | URL | Sécurité |
+|---------|-----|----------|
+| Zammad | `https://zammad.mondomaine.com` | HTTPS (Let's Encrypt) |
+| OCS Inventory | `https://ocs.mondomaine.com` | HTTPS + Auth |
+| Wiki.js | `https://wiki.mondomaine.com` | HTTPS + Auth LDAP |
+| Grafana | `https://grafana.mondomaine.com` | HTTPS + Auth LDAP |
+| Portainer | `https://portainer.mondomaine.com` | HTTPS + Auth forte |
+| MailHog |  (développement uniquement) | - |
+| phpLDAPadmin | `https://ldap.mondomaine.com` | HTTPS + Restriction IP |
+| Prometheus | `https://prometheus.mondomaine.com` | HTTPS + BasicAuth |
+| Traefik Dashboard | `https://traefik.mondomaine.com` | HTTPS + BasicAuth |
 
-### Consulter les logs d'un service
-
-```bash
-docker-compose logs -f portainer
-```
-
-### Arrêter tous les services
-
-```bash
-docker-compose down
-```
-
-### Redémarrer un service spécifique
-
-```bash
-docker-compose restart portainer
-```
-
-### Mettre à jour les images Docker
-
-```bash
-docker-compose pull
-docker-compose up -d
-```
-
-## 🔍 Dépannage
-
-### Erreur 403 sur phpLDAPadmin ou autres services
-- Vérifiez que les services sont bien démarrés : `docker-compose ps`
-- Assurez-vous d'utiliser HTTP (pas HTTPS) pour phpLDAPadmin
-- Pour phpLDAPadmin, utilisez : http://localhost:8080
-
-### Zammad ne démarre pas / zammad-init en boucle
-- Vérifiez les logs : `docker logs zammad-init`
-- **Attention** : Les mots de passe dans `.env` ne doivent PAS contenir de caractères spéciaux comme `!` qui peuvent être mal interprétés
-- Si nécessaire, supprimez les volumes et redémarrez :
-```bash
-docker-compose down
-docker volume rm ticketingonthefly_postgres_data ticketingonthefly_zammad_data
-docker-compose up -d
-```
-
-### zammad-nginx affiche en boucle « waiting for init container to finish install or update… »
-- Cause la plus fréquente: la variable d'environnement `REDIS_URL` manque sur le conteneur `zammad-nginx`.
-- Correction: ajoutez cette ligne dans `docker-compose.yml` sous `zammad-nginx.environment`:
-	- `REDIS_URL=redis://zammad-redis:6379`
-- Recréez ensuite le conteneur nginx:
-```bash
-docker compose up -d zammad-nginx
-```
-
-### Vérifier qu'un conteneur a bien terminé son initialisation
-```bash
-# Voir si zammad-init s'est terminé avec succès
-docker ps -a --filter "name=zammad-init"
-# Le status doit être "Exited (0)" pour un succès
-```
-
-## 📖 Documentation détaillée
-
-### Service OpenLDAP (Annuaire centralisé)
-
-#### Rôle
-OpenLDAP est la base de données centrale pour toutes les identités du système. Tous les autres services (Zammad, Wiki.js, Grafana) se connecteront à cet annuaire pour authentifier les utilisateurs, permettant une gestion centralisée des comptes.
-
-#### Configuration
-Nouvelles variables dans le fichier `.env` :
-- `LDAP_ADMIN_PASSWORD` : Mot de passe de l'administrateur LDAP
-- `ORGANISATION_NAME` : Nom de votre organisation
-- `DOMAIN` : Utilisé pour construire la base DN (dc=localhost → dc=localhost)
-
-#### Structure de base
-Après le premier lancement, créez la structure suivante dans phpLDAPadmin :
-- `ou=users` : Pour stocker les utilisateurs
-- `ou=groups` : Pour stocker les groupes
-
-**Procédure de création :**
-1. Connectez-vous à phpLDAPadmin (http://localhost:8080)
-2. Cliquez sur votre base (dc=localhost ou votre domaine)
-3. "Create new entry here" → "Generic: Organisational Unit"
-4. Créez `users` puis répétez pour `groups`
-
-#### Identifiants par défaut
-- **DN administrateur** : `cn=admin,dc=localhost` (adaptez selon votre `DOMAIN`)
-- **Mot de passe** : Défini dans `LDAP_ADMIN_PASSWORD` du fichier `.env`
+**Configuration DNS requise** : Créez des enregistrements A pointant vers l'IP de votre serveur pour chaque sous-domaine.
 
 ---
 
-Pour plus d'informations sur chaque composant :
-- [Partie 1 : Fondations et Conteneurisation](docs/01-fondations.md)
-- [Partie 2 : Gestion des identités avec OpenLDAP](docs/02-openldap.md) *(à venir)*
-- [Partie 3 : Zammad et ticketing](docs/03-zammad.md) *(à venir)*
+##  Configuration Post-Installation
 
-### Service Zammad (Ticketing & Base de connaissances)
+Après le déploiement, consultez le guide détaillé : **[doc/POST-INSTALLATION.md](doc/POST-INSTALLATION.md)**
 
-#### Accès
-- URL : http://localhost:8081
-- Premier lancement : l'initialisation peut prendre 5 à 10 minutes (préparation DB, indexation ES).
+**Ordre de configuration recommandé :**
 
-#### Dépendances
-- Base de données PostgreSQL (conteneur `zammad-db`)
-- Elasticsearch (conteneur `zammad-elasticsearch`)
-- Redis (conteneur `zammad-redis`) - pour le cache et les sessions
+1.  **Portainer** : Créer le compte admin (interface de gestion Docker)
+2.  **OpenLDAP** : Créer la structure (ou=users, ou=groups) via phpLDAPadmin
+3.  **Zammad** : Configuration initiale + intégration LDAP
+4.  **OCS Inventory** : Configuration + déploiement des agents
+5.  **Wiki.js** : Création admin + intégration LDAP + première page
+6.  **Grafana** : Intégration Prometheus + dashboards + LDAP
+7.  **MailHog** : Tests d'envoi d'emails depuis Zammad
 
-#### Architecture multi-services
-Zammad utilise une architecture distribuée :
-- **zammad-init** : Initialise la DB et effectue les migrations (s'arrête après succès)
-- **zammad-railsserver** : Application Rails principale
-- **zammad-websocket** : Gère les communications temps réel
-- **zammad-scheduler** : Traite les tâches en arrière-plan
-- **zammad-nginx** : Proxy inverse et point d'entrée HTTP
-
-#### Intégration LDAP (via OpenLDAP)
-Après création de l'admin Zammad via l'assistant:
-- Paramètres → Intégrations → LDAP → Ajouter un hôte LDAP
-- Hôte: `openldap`, Port: `389`
-- Bind DN: `cn=admin,dc=localhost` (adaptez à votre domaine)
-- Mot de passe: valeur de `LDAP_ADMIN_PASSWORD`
-- Base DN utilisateurs: `ou=users,dc=localhost` (adaptez)
-- Mappage attributs recommandés: uid → Login, givenName → Prénom, sn → Nom, mail → E-mail
-
-Notes:
-- Si Elasticsearch ne démarre pas, vérifiez le paramètre kernel `vm.max_map_count` dans WSL2 (requis: 262144).
-
-## 🔐 Sécurité
-
-- ⚠️ **Ne jamais committer le fichier `.env`** - il contient des informations sensibles
-- 🔒 Utilisez des mots de passe forts pour tous les services
-- 🌐 En production, configurez Traefik avec Let's Encrypt pour des certificats SSL valides
-- 🛡️ Limitez l'exposition des ports aux seuls nécessaires
-
-## 🛠️ Maintenance
-
-### Sauvegardes
-
-Les données persistantes sont stockées dans les volumes Docker et le dossier `./data/`. 
-
-Pour sauvegarder :
-```bash
-# Arrêter les services
-docker-compose down
-
-# Sauvegarder le dossier data
-tar -czf backup-$(date +%Y%m%d).tar.gz data/
-
-# Redémarrer les services
-docker-compose up -d
-```
-
-### Mises à jour
-
-```bash
-# Récupérer les dernières versions
-docker-compose pull
-
-# Recréer les conteneurs avec les nouvelles images
-docker-compose up -d
-```
-
-## 📝 État actuel du projet
-
-### ✅ Partie 1 : Fondations (Complétée)
-- [x] Structure de dossiers
-- [x] Configuration Docker Compose
-- [x] Variables d'environnement
-- [x] Service Portainer opérationnel
-
-### ✅ Partie 2 : OpenLDAP (Complétée)
-- [x] Service OpenLDAP configuré
-- [x] Interface phpLDAPadmin opérationnelle
-- [x] Configuration pour gestion centralisée des identités
-
-### ✅ Partie 3 : Zammad (Déployé)
-- [x] Services PostgreSQL et Elasticsearch démarrés
-- [x] Zammad accessible sur http://localhost:8081
-- [x] Intégration LDAP prête côté Zammad
-
-### 🔄 À venir
-- [ ] Partie 4 : OCS Inventory
-- [ ] Partie 5 : Wiki.js
-- [ ] Partie 6 : Prometheus & Grafana
-- [ ] Partie 7 : Traefik
-- [ ] Partie 8 : MailHog
-
-## 🤝 Contribution
-
-Ce projet est conçu de manière modulaire. Chaque service peut être ajouté indépendamment.
-
-## 📄 Licence
-
-[À définir]
+**Temps de configuration estimé** : 2-3 heures pour une configuration complète
 
 ---
 
-**Auteur** : Ianis  
-**Dernière mise à jour** : Octobre 2025
+##  Commandes Utiles
+
+### Gestion des Services
+
+```bash
+# Voir l'état de tous les services
+docker-compose ps
+
+# Démarrer tous les services
+docker-compose up -d
+
+# Arrêter tous les services
+docker-compose down
+
+# Redémarrer un service spécifique
+docker-compose restart zammad-nginx
+
+# Voir les logs d'un service
+docker-compose logs -f zammad-railsserver
+
+# Voir les logs de tous les services
+docker-compose logs -f
+
+# Mettre à jour les images
+docker-compose pull
+docker-compose up -d --remove-orphans
+```
+
+### Maintenance et Monitoring
+
+```bash
+# Espace disque utilisé par Docker
+docker system df
+
+# Nettoyer les ressources inutilisées
+docker system prune -a
+
+# Voir les ressources consommées
+docker stats
+
+# Accéder au shell d'un conteneur
+docker-compose exec zammad-railsserver bash
+
+# Sauvegarder l'infrastructure
+./backup.sh
+
+# Consulter les métriques Prometheus
+curl http://localhost:9090/metrics
+```
+
+---
+
+##  Stratégie de Sauvegarde
+
+### Script de Sauvegarde Automatisé
+
+Le projet inclut un script `backup.sh` qui sauvegarde :
+
+-  **Bases de données** : PostgreSQL (Zammad, Wiki.js) et MariaDB (OCS)
+-  **Volumes persistants** : Zammad, Wiki.js, Grafana, Prometheus, OpenLDAP, Portainer
+-  **Certificats SSL** : acme.json de Traefik
+-  **Configuration** : .env, docker-compose.yml, fichiers de config
+
+#### Utilisation du script
+
+```bash
+# Sauvegarde manuelle
+./backup.sh
+
+# Sauvegarde vers un répertoire spécifique
+./backup.sh /mnt/external/backups
+
+# Automatiser avec cron (tous les jours à 2h du matin)
+crontab -e
+# Ajouter cette ligne :
+0 2 * * * /home/user/TicketingOntheFly/backup.sh >> /var/log/ticketing-backup.log 2>&1
+```
+
+#### Politique de Rétention
+
+- Le script conserve automatiquement les **7 dernières sauvegardes**
+- Les sauvegardes plus anciennes sont supprimées automatiquement
+- **Recommandation** : Copier régulièrement les sauvegardes sur un stockage distant (NAS, cloud)
+
+### Restauration
+
+Pour restaurer une sauvegarde, consultez : **[doc/POST-INSTALLATION.md](doc/POST-INSTALLATION.md#restauration-de-sauvegarde)**
+
+---
+
+##  Sécurité et Bonnes Pratiques
+
+###  Checklist de Sécurité
+
+- [ ] Changer TOUS les mots de passe par défaut
+- [ ] Ne JAMAIS committer le fichier `.env` (déjà dans `.gitignore`)
+- [ ] Activer HTTPS en production (Let's Encrypt via Traefik)
+- [ ] Restreindre l'accès à phpLDAPadmin et Prometheus (IP whitelisting)
+- [ ] Configurer l'authentification LDAP pour tous les services
+- [ ] Activer les sauvegardes automatiques quotidiennes
+- [ ] Mettre en place un monitoring des alertes Grafana
+- [ ] Configurer un pare-feu (ufw, iptables)
+- [ ] Limiter les ports exposés (seulement 80/443 en production)
+- [ ] Activer les logs d'audit sur les services critiques
+
+###  Gestion des Secrets
+
+**Mots de passe forts recommandés :**
+```bash
+# Générer un mot de passe aléatoire sécurisé
+openssl rand -base64 32
+```
+
+**Variables sensibles dans `.env` :**
+- `POSTGRES_PASSWORD` : Base de données principale
+- `LDAP_ADMIN_PASSWORD` : Administrateur LDAP
+- `MARIADB_ROOT_PASSWORD` : Root MariaDB
+- `OCS_DB_PASSWORD` : Base OCS Inventory
+
+---
+
+##  Supervision et Alerting
+
+### Dashboards Grafana Pré-configurés
+
+Le projet inclut des dashboards pour :
+-  **Métriques Docker** : CPU, RAM, réseau de chaque conteneur
+-  **Métriques système** : Charge serveur, disque, uptime
+-  **Métriques applicatives** : Temps de réponse Zammad, requêtes PostgreSQL
+-  **Alertes** : Notifications Slack/Email en cas de problème
+
+### Configuration des Alertes
+
+Consultez : **[doc/06 - Supervision, Métriques et Alerting.md](doc/06%20-%20Supervision,%20Métriques%20et%20Alerting%20avec%20Prometheus%20et%20Grafana.md)**
+
+---
+
+##  Dépannage
+
+### Problèmes Courants
+
+#### Erreur "port already in use"
+
+```bash
+# Identifier le processus qui utilise le port
+sudo lsof -i :8081
+
+# Arrêter le processus ou changer le port dans docker-compose.yml
+```
+
+#### Zammad ne démarre pas
+
+```bash
+# Vérifier les logs d'initialisation
+docker-compose logs zammad-init
+
+# Si problème de migration DB, réinitialiser
+docker-compose down
+docker volume rm ticketingonthefly_postgres_data
+docker-compose up -d
+```
+
+#### Elasticsearch n'a pas assez de mémoire
+
+```bash
+# Augmenter vm.max_map_count (Linux/WSL)
+sudo sysctl -w vm.max_map_count=262144
+
+# Rendre permanent
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+```
+
+#### Traefik ne détecte pas les services
+
+```bash
+# Vérifier que les labels Docker sont corrects
+docker-compose config
+
+# Redémarrer Traefik
+docker-compose restart traefik
+
+# Consulter les logs Traefik
+docker-compose logs traefik
+```
+
+### Ressources de Dépannage
+
+- **Documentation détaillée** : [doc/POST-INSTALLATION.md](doc/POST-INSTALLATION.md)
+- **Logs de tous les services** : `docker-compose logs -f`
+- **Portainer** : Interface graphique pour inspecter les conteneurs
+- **CHANGELOG.md** : Historique complet des commandes et décisions
+
+---
+
+##  Documentation Complète
+
+| Document | Description |
+|----------|-------------|
+| [POST-INSTALLATION.md](doc/POST-INSTALLATION.md) | Guide de configuration post-déploiement de chaque service |
+| [CHANGELOG.md](CHANGELOG.md) | Journal de bord complet de toutes les phases du projet |
+| [00 - TicketOnTheFly.md](doc/00%20-%20TicketOnTheFly.md) | Vision globale et théorique du projet |
+| [01 - Fondations.md](doc/01%20-%20Fondations%20de%20l'Infrastructure%20et%20Conteneurisation.md) | Docker, Docker Compose, Infrastructure as Code |
+| [02 - OpenLDAP.md](doc/02%20-%20Gestion%20Centralisée%20des%20Identités%20avec%20OpenLDAP.md) | Configuration de l'annuaire LDAP |
+| [03 - Zammad.md](doc/03%20-%20Ticketing%20et%20Base%20de%20Connaissances%20avec%20Zammad.md) | Déploiement et intégration Zammad |
+| [04 - OCS Inventory.md](doc/04%20-%20Inventaire%20et%20Gestion%20du%20Parc%20Informatique%20avec%20OCS%20Inventory.md) | Inventaire automatisé |
+| [05 - Wiki.js.md](doc/05%20-%20Documentation%20Interne%20et%20Procédures%20avec%20Wiki.js.md) | Documentation technique |
+| [06 - Prometheus & Grafana.md](doc/06%20-%20Supervision,%20Métriques%20et%20Alerting%20avec%20Prometheus%20et%20Grafana.md) | Supervision et métriques |
+| [07 - Traefik.md](doc/07%20-%20Accès,%20Sécurité%20et%20Routage%20avec%20Traefik.md) | Reverse proxy et SSL |
+| [08 - Gestion et Développement.md](doc/08%20-%20Gestion%20et%20Développement.md) | Portainer et MailHog |
+| [09 - Consolidation.md](doc/09%20-%20Consolidation,%20Sauvegarde%20et%20Bonnes%20Pratiques.md) | Scripts d'automatisation et stratégie de sauvegarde |
+
+---
+
+##  État du Projet
+
+###  Phases Complétées
+
+- [x] **Phase 1** : Fondations (Docker Compose, Portainer)
+- [x] **Phase 2** : OpenLDAP et phpLDAPadmin
+- [x] **Phase 3** : Zammad (Ticketing)
+- [x] **Phase 4** : OCS Inventory (Inventaire)
+- [x] **Phase 5** : Wiki.js (Documentation)
+- [x] **Phase 6** : Prometheus & Grafana (Supervision)
+- [x] **Phase 7** : Traefik (Reverse Proxy & SSL)
+- [x] **Phase 8** : MailHog (SMTP de test) & Portainer finalisé
+- [x] **Phase 9** : Consolidation, scripts d'automatisation et documentation finale
+
+###  Projet Complet et Production-Ready !
+
+**19 services déployés** | **Infrastructure professionnelle** | **Documenté de A à Z**
+
+---
+
+##  Contribution
+
+Les contributions sont bienvenues ! N'hésitez pas à :
+-  Signaler des bugs via les Issues
+-  Proposer des améliorations
+-  Améliorer la documentation
+-  Soumettre des Pull Requests
+
+### Comment Contribuer
+
+1. Fork le projet
+2. Créez une branche (`git checkout -b feature/amelioration`)
+3. Committez vos changements (`git commit -m 'Ajout fonctionnalité X'`)
+4. Poussez vers la branche (`git push origin feature/amelioration`)
+5. Ouvrez une Pull Request
+
+---
+
+##  Licence
+
+Ce projet est sous licence **MIT**. Consultez le fichier [LICENSE](LICENSE) pour plus de détails.
+
+---
+
+##  Auteur
+
+**Ianis**
+
+-  Email : [votre-email@example.com]
+-  GitHub : [@VotreUsername](https://github.com/VotreUsername)
+
+---
+
+##  Remerciements
+
+Ce projet utilise les excellents logiciels open-source suivants :
+- [Zammad](https://zammad.org/) - Plateforme de ticketing
+- [OpenLDAP](https://www.openldap.org/) - Serveur LDAP
+- [Wiki.js](https://js.wiki/) - Solution de documentation moderne
+- [OCS Inventory](https://ocsinventory-ng.org/) - Inventaire IT
+- [Prometheus](https://prometheus.io/) - Monitoring et alerting
+- [Grafana](https://grafana.com/) - Visualisation de métriques
+- [Traefik](https://traefik.io/) - Reverse proxy moderne
+- [Portainer](https://www.portainer.io/) - Gestion Docker
+- [MailHog](https://github.com/mailhog/MailHog) - Test SMTP
+
+---
+
+** Si ce projet vous a été utile, n'hésitez pas à lui donner une étoile sur GitHub !**
+
+---
+
+**Dernière mise à jour** : Octobre 2025 | **Version** : 1.0.0
