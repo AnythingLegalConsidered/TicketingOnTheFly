@@ -1,553 +1,242 @@
-# Ticketing Auto - Main Docker Compose Configuration
-# Core services orchestration
-
-x-common: &common
-  restart: unless-stopped
-  logging:
-    driver: "json-file"
-    options:
-      max-size: "10m"
-      max-file: "3"
-
-x-environment: &environment
-  TZ: ${TZ:-Europe/Paris}
-
-x-networks: &networks
-  networks:
-    - frontend
-    - backend
+version: '3.8'
 
 services:
-  # # Reverse Proxy & Security Gateway
-  # traefik:
-  #   image: traefik:v2.11 # Utiliser une version spécifique est une bonne pratique
-  #   container_name: traefik
-  #   command:
-  #     - "--configfile=/etc/traefik/traefik.yml"
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  #     - "./services/traefik/traefik.yml:/etc/traefik/traefik.yml:ro"
-  #     - "./services/traefik/dynamic:/etc/traefik/dynamic:ro"
-  #     - "traefik_letsencrypt:/letsencrypt"
-  #     - "./logs/traefik:/var/log/traefik"
-  #   networks:
-  #     - frontend
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.traefik.rule=Host('traefik.ticketing.local')"
-  #     - "traefik.http.routers.traefik.service=api@internal"
-  #     - "traefik.http.routers.traefik.entrypoints=web"
+  # --- Dépendances pour Zammad ---
+  zammad-db:
+    image: postgres:15
+    container_name: zammad-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - TZ=${TZ}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ticketing_network
 
+  zammad-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
+    container_name: zammad-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - TZ=${TZ}
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - ticketing_network
+
+  zammad-redis:
+    image: redis:7-alpine
+    container_name: zammad-redis
+    restart: unless-stopped
+    networks:
+      - ticketing_network
+
+  # --- Zammad init job ---
+  zammad-init:
+    image: zammad/zammad:latest
+    container_name: zammad-init
+    command: zammad-init
+    restart: on-failure
+    depends_on:
+      - zammad-db
+      - zammad-elasticsearch
+      - zammad-redis
+    environment:
+      - POSTGRESQL_HOST=zammad-db
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASSWORD}
+      - ELASTICSEARCH_HOST=zammad-elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEMA=http
+      - REDIS_URL=redis://zammad-redis:6379
+      - TZ=${TZ}
+    volumes:
+      - zammad_data:/opt/zammad/
+    networks:
+      - ticketing_network
+
+  # --- Zammad Rails server ---
+  zammad-railsserver:
+    image: zammad/zammad:latest
+    container_name: zammad-railsserver
+    command: zammad-railsserver
+    restart: unless-stopped
+    depends_on:
+      - zammad-init
+    environment:
+      - POSTGRESQL_HOST=zammad-db
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASSWORD}
+      - ELASTICSEARCH_HOST=zammad-elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEMA=http
+      - REDIS_URL=redis://zammad-redis:6379
+      - TZ=${TZ}
+    ports:
+      - "8082:3000"
+    volumes:
+      - zammad_data:/opt/zammad/
+    networks:
+      - ticketing_network
+
+  # --- Zammad Websocket ---
+  zammad-websocket:
+    image: zammad/zammad:latest
+    container_name: zammad-websocket
+    command: zammad-websocket
+    restart: unless-stopped
+    depends_on:
+      - zammad-init
+    environment:
+      - POSTGRESQL_HOST=zammad-db
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASSWORD}
+      - ELASTICSEARCH_HOST=zammad-elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEMA=http
+      - REDIS_URL=redis://zammad-redis:6379
+      - TZ=${TZ}
+    volumes:
+      - zammad_data:/opt/zammad/
+    networks:
+      - ticketing_network
+
+  # --- Zammad Scheduler (background jobs) ---
+  zammad-scheduler:
+    image: zammad/zammad:latest
+    container_name: zammad-scheduler
+    command: zammad-scheduler
+    restart: unless-stopped
+    depends_on:
+      - zammad-init
+    environment:
+      - POSTGRESQL_HOST=zammad-db
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASSWORD}
+      - ELASTICSEARCH_HOST=zammad-elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEMA=http
+      - REDIS_URL=redis://zammad-redis:6379
+      - TZ=${TZ}
+    volumes:
+      - zammad_data:/opt/zammad/
+    networks:
+      - ticketing_network
+
+  # --- Zammad Nginx (frontend) ---
+  zammad-nginx:
+    image: zammad/zammad:latest
+    container_name: zammad-nginx
+    command: zammad-nginx
+    restart: unless-stopped
+    depends_on:
+      - zammad-init
+      - zammad-railsserver
+      - zammad-websocket
+    environment:
+      - NGINX_PORT=8080
+      - TZ=${TZ}
+      - ZAMMAD_RAILSSERVER_HOST=zammad-railsserver
+      - ZAMMAD_WEBSOCKET_HOST=zammad-websocket
+      - POSTGRESQL_HOST=zammad-db
+      - POSTGRESQL_DB=${POSTGRES_DB}
+      - POSTGRESQL_USER=${POSTGRES_USER}
+      - POSTGRESQL_PASS=${POSTGRES_PASSWORD}
+      - REDIS_URL=redis://zammad-redis:6379
+    ports:
+      - "8081:8080"
+    volumes:
+      - zammad_data:/opt/zammad/
+    networks:
+      - ticketing_network
+  # --- Service d'annuaire : OpenLDAP ---
   openldap:
     image: osixia/openldap:1.5.0
     container_name: openldap
-    networks:
-      - backend
-    volumes:
-      - ldap_data:/var/lib/ldap
-      - ldap_config:/etc/ldap/slapd.d
-      #- ./services/openldap/bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    restart: unless-stopped
     environment:
-      - LDAP_ORGANIZATION=${LDAP_ORGANIZATION}
-      - LDAP_DOMAIN=${LDAP_DOMAIN}
-      - LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_password
-      - LDAP_READONLY_USER_PASSWORD_FILE=/run/secrets/ldap_readonly_password
-      - LDAP_BASE_DN=${LDAP_BASE_DN}
-    secrets:
-      - ldap_admin_password
-      - ldap_readonly_password 
-    expose:
-      - "389"
-      - "636"
-    healthcheck:
-      test: ["CMD", "ldapwhoami", "-x", "-H", "ldap://localhost:389"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      # Utilise le domaine défini dans le fichier .env
+      - LDAP_DOMAIN=${DOMAIN}
+      # Utilise le mot de passe admin défini dans le fichier .env
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
+      # Configuration pour la réplication (non utilisée ici mais bonne pratique)
+      - LDAP_CONFIG_PASSWORD=${LDAP_ADMIN_PASSWORD}
+      # Supprime la base de données existante au démarrage si le volume est vide,
+      # pour assurer une installation propre.
+      - LDAP_REMOVE_CONFIG_AFTER_SETUP=true
+      - TZ=${TZ}
+    volumes:
+      # Volume pour la base de données LDAP
+      - ldap_data:/var/lib/ldap
+      # Volume pour la configuration de slapd (le démon LDAP)
+      - ldap_config:/etc/ldap/slapd.d
+    networks:
+      - ticketing_network
 
+  # --- Interface de gestion pour OpenLDAP : phpLDAPadmin ---
   phpldapadmin:
     image: osixia/phpldapadmin:0.9.0
     container_name: phpldapadmin
-    networks:
-      - frontend
-      - backend
+    restart: unless-stopped
     environment:
+      # Indique à phpLDAPadmin où trouver le serveur LDAP
       - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      # Permet de se connecter avec le DN complet (plus sécurisé)
+      - PHPLDAPADMIN_LDAP_CLIENT_TLS=false
       - PHPLDAPADMIN_HTTPS=false
+      - TZ=${TZ}
+    ports:
+      # Port pour accéder à l'interface web. NE PAS exposer sur internet.
+      - "8080:80"
     depends_on:
       - openldap
-    ports:
-      - "8081:80"
+    networks:
+      - ticketing_network
 
-  # Zammad Database - PostgreSQL
-  zammad-db:
-    image: postgres:15-alpine
-    container_name: zammad-db
+  # --- Service de gestion Docker : Portainer ---
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
     restart: unless-stopped
-    networks:
-      - backend
-    environment:
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: zammad_production
-      TZ: ${TZ:-Europe/Paris}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    secrets:
-      - postgres_password
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d zammad_production"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-  # OCS Inventory Database - MariaDB
-  ocs-db:
-    <<: [*common]
-    image: mariadb:10.11
-    container_name: ocs-db
-    networks:
-      - backend
-    environment:
-      <<: *environment
-      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
-      MARIADB_DATABASE: ocsweb
-      MARIADB_USER: ocs
-      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_password
-    volumes:
-      - ocs_db_data:/var/lib/mysql
-      - ./services/mariadb/init:/docker-entrypoint-initdb.d:ro
-    secrets:
-      - mariadb_root_password
-      - mariadb_password
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$(cat /run/secrets/mariadb_root_password)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Redis - Cache for Zammad
-  redis:
-    <<: [*common]
-    image: redis:7-alpine
-    container_name: redis
-    networks:
-      - backend
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Zammad Search - Elasticsearch
-  zammad-elasticsearch:
-    <<: [*common]
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.3
-    container_name: zammad-elasticsearch
-    networks:
-      - backend
-    environment:
-      <<: *environment
-      discovery.type: single-node
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
-      xpack.security.enabled: false
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-# Zammad - Ticketing System
-  zammad-railsserver:
-    <<: [*common]
-    image: zammad/zammad-docker-compose:zammad-6.1.0-23
-    container_name: zammad-railsserver
-    command: ["zammad-railsserver"]
-    networks:
-      - frontend
-      - backend
-    depends_on:
-      zammad-db:
-        condition: service_healthy
-      zammad-elasticsearch:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    environment:
-      <<: *environment
-      POSTGRES_HOST: zammad-db
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD_FILE: /run/secrets/zammad_db_password
-      POSTGRES_DB: zammad_production
-      MEMCACHE_SERVERS: redis:6379
-      REDIS_URL: redis://redis:6379
-      ELASTICSEARCH_ENABLED: "true"
-      ELASTICSEARCH_HOST: zammad-elasticsearch
-      ELASTICSEARCH_PORT: 9200
-      ELASTICSEARCH_SCHEMA: http
-      NGINX_SERVER_SCHEME: http
-      RAILS_TRUSTED_PROXIES: "['traefik']"
-    volumes:
-      - zammad_storage:/opt/zammad/storage
-      - zammad_var:/opt/zammad/var
     ports:
-      - "8088:8080"
-    secrets:
-      - zammad_db_password
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
-
-  zammad-scheduler:
-    <<: [*common]
-    image: zammad/zammad-docker-compose:zammad-6.1.0-23
-    container_name: zammad-scheduler
-    command: ["zammad-scheduler"]
+      # Port pour accéder à l'interface web de Portainer.
+      # NE PAS exposer ce port sur internet directement. L'accès se fera via Traefik plus tard.
+      - "9443:9443"
+      - "9000:9000"
+    volumes:
+      # Volume pour stocker les données de Portainer de manière persistante
+      - portainer_data:/data
+      # Donne à Portainer l'accès à Docker pour qu'il puisse gérer les autres conteneurs
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - backend
-    depends_on:
-      zammad-railsserver:
-        condition: service_healthy
+      - ticketing_network
     environment:
-      <<: *environment
-      POSTGRES_HOST: zammad-db
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD_FILE: /run/secrets/zammad_db_password
-      POSTGRES_DB: zammad_production
-      MEMCACHE_SERVERS: redis:6379
-      REDIS_URL: redis://redis:6379
-      ELASTICSEARCH_ENABLED: "true"
-      ELASTICSEARCH_HOST: zammad-elasticsearch
-      ELASTICSEARCH_PORT: 9200
-    volumes:
-      - zammad_storage:/opt/zammad/storage
-      - zammad_var:/opt/zammad/var
-    secrets:
-      - zammad_db_password
+      - TZ=${TZ}
 
-  zammad-websocket:
-    <<: [*common]
-    image: zammad/zammad:6.1.0-23
-    container_name: zammad-websocket
-    command: ["zammad-websocket"]
-    networks:
-      - backend
-    depends_on:
-      zammad-railsserver:
-        condition: service_healthy
-    environment:
-      <<: *environment
-      ZAMMAD_DB_HOST: zammad-db
-      ZAMMAD_DB_PASSWORD_FILE: /run/secrets/zammad_db_password
-      ZAMMAD_SECRET_KEY_BASE_FILE: /run/secrets/zammad_secret_key_base
-      REDIS_URL: redis://redis:6379/0
-      ELASTICSEARCH_URL: http://zammad-elasticsearch:9200
-    volumes:
-      - zammad_storage:/opt/zammad/storage
-      - zammad_var:/opt/zammad/var
-    secrets:
-      - zammad_db_password
-      - zammad_secret_key_base
-
-  # OCS Inventory - Asset Management
-ocs-server:
-  <<: [*common, *networks]
-  image: ocsinventory/ocsinventory-docker-image:2.12.2  # Version plus récente
-  container_name: ocs-server
-  depends_on:
-    ocs-db:
-      condition: service_healthy
-  environment:
-    <<: *environment
-    OCS_DBSERVER_READ: ocs-db      # ← CHANGEMENT ICI
-    OCS_DBSERVER_WRITE: ocs-db     # ← ET ICI
-    OCS_DB_NAME: ocsweb
-    OCS_DB_USER: ocs
-    OCS_DB_PORT: 3306
-    OCS_DB_PASS_FILE: /run/secrets/ocs_db_password
-  volumes:
-    - ocs_server_data:/usr/share/ocsinventory-reports
-    - ocs_perlmod_data:/etc/ocsinventory-reports
-  ports:
-    - "8082:80"
-  secrets:
-    - ocs_db_password
-  healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost/ocsreports/"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    start_period: 60s
-
-  # Wiki.js Database - PostgreSQL
-  wiki-db:
-    <<: [*common]
-    image: postgres:15-alpine
-    container_name: wiki-db
-    networks:
-      - backend
-    environment:
-      <<: *environment
-      POSTGRES_USER: wikijs
-      POSTGRES_PASSWORD_FILE: /run/secrets/wikijs_db_password
-      POSTGRES_DB: wikijs
-    volumes:
-      - wiki_db_data:/var/lib/postgresql/data
-    secrets:
-      - wikijs_db_password
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wikijs"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Wiki.js - Documentation System
-  wiki-js:
-    <<: [*common, *networks]
-    image: ghcr.io/requarks/wiki:2.5
-    container_name: wiki-js
-    depends_on:
-      - wiki-db
-    environment:
-      <<: *environment
-      DB_TYPE: postgres
-      DB_HOST: wiki-db
-      DB_PORT: 5432
-      DB_USER: wikijs
-      DB_PASS_FILE: /run/secrets/wikijs_db_password
-      DB_NAME: wikijs
-      DB_SSL: false
-      HA_ACTIVE: false
-      SECRET_FILE: /run/secrets/wikijs_secret
-    volumes:
-      - wiki_js_data:/data
-      - ./services/wikijs/config:/data/config:ro
-    ports:
-      - "3000:3000"
-    secrets:
-      - wikijs_db_password
-      - wikijs_secret
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Monitoring Stack
-  # cadvisor:
-  #   <<: [*common]
-  #   image: gcr.io/cadvisor/cadvisor:v0.47.2
-  #   container_name: cadvisor
-  #   volumes:
-  #     - /:/rootfs:ro
-  #     - /var/run:/var/run:rw
-  #     - /sys:/sys:ro
-  #     - /var/lib/docker/:/var/lib/docker:ro
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - backend
-
-  prometheus:
-    <<: [*common]
-    image: prom/prometheus:v2.47.0
-    container_name: prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION}'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
-    volumes:
-      - prometheus_data:/prometheus
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
-    ports:
-      - "9090:9090"
-    networks:
-      - frontend
-      - backend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090/-/healthy"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  grafana:
-    <<: [*common]
-    image: grafana/grafana:10.2.0
-    container_name: grafana
-    environment:
-      <<: *environment
-      GF_SECURITY_ADMIN_PASSWORD_FILE: /run/secrets/grafana_admin_password
-      GF_SERVER_ROOT_URL: http://grafana.ticketing.local
-      GF_SERVER_DOMAIN: ticketing.local
-      GF_SERVER_SERVE_FROM_SUB_PATH: false
-      GF_USERS_ALLOW_SIGN_UP: false
-      GF_AUTH_ANONYMOUS_ENABLED: false
-      GF_AUTH_BASIC_ENABLED: true
-      GF_AUTH_DISABLE_LOGIN_FORM: false
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
-    ports:
-      - "3001:3000" # 3000 is already used by wiki-js
-    secrets:
-      - grafana_admin_password
-    networks:
-      - frontend
-      - backend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  loki:
-    <<: [*common]
-    image: grafana/loki:2.9.1
-    container_name: loki
-    user: "10001:10001"  # ← AJOUTER CETTE LIGNE
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - loki_data:/loki
-      - ./monitoring/loki/config:/etc/loki:ro
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3100/ready"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  promtail:
-    <<: [*common]
-    image: grafana/promtail:2.9.1
-    container_name: promtail
-    command: -config.file=/etc/promtail/config.yml
-    volumes:
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./monitoring/promtail/config:/etc/promtail:ro
-    networks:
-      - backend
-    depends_on:
-      - loki
-
-  alertmanager:
-    <<: [*common]
-    image: prom/alertmanager:v0.26.0
-    container_name: alertmanager
-    command:
-      - '--config.file=/etc/alertmanager/alertmanager.yml'
-      - '--storage.path=/alertmanager'
-    volumes:
-      - alertmanager_data:/alertmanager
-      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
-    ports:
-      - "9093:9093"
-    networks:
-      - frontend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9093/-/healthy"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # node-exporter:
-  #   image: prom/node-exporter:v1.6.1
-  #   container_name: node-exporter
-  #   command:
-  #     - '--path.rootfs=/host'
-  #   pid: host
-  #   restart: unless-stopped
-  #   volumes:
-  #     - '/:/host:ro,rslave'
-  #   networks:
-  #     - backend
-
-# Networks
-networks:
-  frontend:
-    driver: bridge
-  backend:
-    driver: bridge
-
-# Volumes
+# --- Définition des volumes nommés ---
+# Les volumes permettent de sauvegarder les données même si les conteneurs sont supprimés.
 volumes:
-  traefik_letsencrypt:
-    name: ticketing_traefik_letsencrypt
+  portainer_data:
   ldap_data:
   ldap_config:
   postgres_data:
-    name: ticketing_postgres_data
-  ocs_db_data:
-    name: ticketing_ocs_db_data
-  redis_data:
-    name: ticketing_redis_data
   elasticsearch_data:
-    name: ticketing_elasticsearch_data
-  ocs_server_data:
-    name: ticketing_ocs_server_data
-  wiki_db_data:
-    name: ticketing_wiki_db_data
-  wiki_js_data:
-    name: ticketing_wiki_js_data
-  prometheus_data:
-    name: ticketing_prometheus_data
-  grafana_data:
-    name: ticketing_grafana_data
-  loki_data:
-    name: ticketing_loki_data
-  alertmanager_data:
-    name: ticketing_alertmanager_data
-  ocs_perlmod_data:
-    name: ticketing_ocs_perlmod_data
-  # ZAMMAD - Volumes séparés pour ne pas masquer les fichiers de l'app
-  zammad_storage:
-    name: ticketing_zammad_storage
-  zammad_var:
-    name: ticketing_zammad_var
+  zammad_data:
 
-# Secrets
-secrets:
-  ldap_admin_password:
-    file: ./secrets/ldap_admin_password.txt
-  ldap_readonly_password:
-    file: ./secrets/ldap_readonly_password.txt
-  postgres_password:
-    file: ./secrets/postgres_password.txt
-  mariadb_root_password:
-    file: ./secrets/mariadb_root_password.txt
-  mariadb_password:
-    file: ./secrets/mariadb_password.txt
-  zammad_db_password:
-    file: ./secrets/zammad_db_password.txt
-  zammad_secret_key_base:
-    file: ./secrets/zammad_secret_key_base.txt
-  zammad_ldap_bind_password:
-    file: ./secrets/zammad_ldap_bind_password.txt
-  ocs_db_password:
-    file: ./secrets/ocs_db_password.txt
-  ocs_admin_password:
-    file: ./secrets/ocs_admin_password.txt
-  wikijs_db_password:
-    file: ./secrets/wikijs_db_password.txt
-  wikijs_secret:
-    file: ./secrets/wikijs_secret.txt
-  grafana_admin_password:
-    file: ./secrets/grafana_admin_password.txt
+# --- Définition des réseaux ---
+# Créer un réseau dédié permettra à nos conteneurs de communiquer de manière isolée.
+networks:
+  ticketing_network:
+    name: systeme-ticketing-net
+    driver: bridge

@@ -1,49 +1,33 @@
-# Dependencies
-node_modules/
-vendor/
-
-# Environment files
+# Fichiers d'environnement et secrets
 .env
-.env.*
-!.env.example
+.env.local
+.env.*.local
+
+# Données locales des services (optionnel - décommenter si vous ne voulez pas versionner les données)
+# data/
 
 # Logs
-logs/*
 *.log
-npm-debug.log*
+logs/
 
-# Database files
-*.sqlite
-*.db
-
-# Secret files
-secrets/*
-!secrets/README.md
-!secrets/example.*
-
-# Docker volumes
-data/
-
-# Build output
-dist/
-build/
-out/
-
-# IDE specific files
-.idea/
-.vscode/
+# Fichiers temporaires
+*.tmp
 *.swp
-*.swo
+*~
 
-# OS specific files
+# IDE et éditeurs
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
 .DS_Store
 Thumbs.db
 
-# Monitoring data
-monitoring/grafana/data/
-monitoring/prometheus/data/
-monitoring/loki/data/
+# Docker
+docker-compose.override.yml
 
-# Cache
-.cache/
-*.cache
+# Sauvegardes
+*.tar.gz
+*.zip
+backup-*/
