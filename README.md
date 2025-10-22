@@ -97,6 +97,36 @@ docker-compose --version  # Doit afficher >= 2.0
 docker info             # Vérifie que Docker fonctionne
 ```
 
+###  Démarrage Ultra-Rapide (10 minutes)
+
+**Pour une installation immédiate avec configuration automatique :**
+
+```bash
+# 1. Cloner le projet
+git clone https://github.com/VotreNom/TicketingOntheFly.git
+cd TicketingOntheFly
+
+# 2. Configurer l'environnement
+cp .env.example .env
+nano .env  # Éditez les variables (domaine, mots de passe)
+
+# 3. Déployer l'infrastructure
+./init.sh
+
+# 4. Configuration automatique (OpenLDAP + Zammad)
+./configure-all.sh
+```
+
+Le script `configure-all.sh` (Phase 10) configure automatiquement :
+-  **OpenLDAP** : Structure, groupes et utilisateurs
+-  **Zammad** : Groupes et intégration LDAP
+-  **Comptes par défaut** : 8 utilisateurs prêts à l'emploi
+-  **Mapping 1:1** : Groupes LDAP synchronisés avec Zammad
+
+**Temps total** : 10 minutes | **Configuration manuelle évitée** : 1-2 heures
+
+ **Consultez le guide de démarrage rapide** : [doc/QUICK-START.md](doc/QUICK-START.md)
+
 ###  Installation Automatisée (Recommandée)
 
 **Déploiement complet en 3 étapes :**
@@ -187,7 +217,30 @@ docker-compose ps
 
 ##  Configuration Post-Installation
 
-Après le déploiement, consultez le guide détaillé : **[doc/POST-INSTALLATION.md](doc/POST-INSTALLATION.md)**
+Après le déploiement, vous avez deux options :
+
+### Option 1 :  Configuration Automatisée (Recommandée)
+
+Utilisez le script de configuration automatique pour OpenLDAP et Zammad :
+
+```bash
+./configure-all.sh
+```
+
+Ce script (Phase 10) :
+-  Crée automatiquement la structure LDAP (ou=users, ou=groups)
+-  Crée 4 groupes par défaut (support-n1, support-n2, administrateurs, utilisateurs)
+-  Crée 8 utilisateurs prêts à l'emploi avec mots de passe
+-  Configure l'intégration LDAP dans Zammad
+-  Synchronise les groupes LDAP avec Zammad (mapping 1:1)
+
+**Personnalisation possible** : Éditez `scripts/config.yaml` avant d'exécuter le script.
+
+ **Documentation complète** : [scripts/README.md](scripts/README.md) | [doc/QUICK-START.md](doc/QUICK-START.md)
+
+### Option 2 : Configuration Manuelle
+
+Pour une configuration manuelle détaillée : **[doc/POST-INSTALLATION.md](doc/POST-INSTALLATION.md)**
 
 **Ordre de configuration recommandé :**
 
@@ -199,7 +252,9 @@ Après le déploiement, consultez le guide détaillé : **[doc/POST-INSTALLATION
 6.  **Grafana** : Intégration Prometheus + dashboards + LDAP
 7.  **MailHog** : Tests d'envoi d'emails depuis Zammad
 
-**Temps de configuration estimé** : 2-3 heures pour une configuration complète
+**Temps de configuration estimé** : 
+- Configuration automatique : 2-3 minutes
+- Configuration manuelle : 2-3 heures
 
 ---
 
@@ -399,20 +454,37 @@ docker-compose logs traefik
 
 ##  Documentation Complète
 
+### Guides Utilisateur
+
 | Document | Description |
 |----------|-------------|
+| [QUICK-START.md](doc/QUICK-START.md) |  **Guide de démarrage rapide** - Déploiement en 10 minutes |
 | [POST-INSTALLATION.md](doc/POST-INSTALLATION.md) | Guide de configuration post-déploiement de chaque service |
+| [GUIDE-PERSONNALISATION.md](doc/GUIDE-PERSONNALISATION.md) |  Guide de personnalisation avancée du projet |
 | [CHANGELOG.md](CHANGELOG.md) | Journal de bord complet de toutes les phases du projet |
-| [00 - TicketOnTheFly.md](doc/00%20-%20TicketOnTheFly.md) | Vision globale et théorique du projet |
-| [01 - Fondations.md](doc/01%20-%20Fondations%20de%20l'Infrastructure%20et%20Conteneurisation.md) | Docker, Docker Compose, Infrastructure as Code |
-| [02 - OpenLDAP.md](doc/02%20-%20Gestion%20Centralisée%20des%20Identités%20avec%20OpenLDAP.md) | Configuration de l'annuaire LDAP |
-| [03 - Zammad.md](doc/03%20-%20Ticketing%20et%20Base%20de%20Connaissances%20avec%20Zammad.md) | Déploiement et intégration Zammad |
-| [04 - OCS Inventory.md](doc/04%20-%20Inventaire%20et%20Gestion%20du%20Parc%20Informatique%20avec%20OCS%20Inventory.md) | Inventaire automatisé |
-| [05 - Wiki.js.md](doc/05%20-%20Documentation%20Interne%20et%20Procédures%20avec%20Wiki.js.md) | Documentation technique |
-| [06 - Prometheus & Grafana.md](doc/06%20-%20Supervision,%20Métriques%20et%20Alerting%20avec%20Prometheus%20et%20Grafana.md) | Supervision et métriques |
-| [07 - Traefik.md](doc/07%20-%20Accès,%20Sécurité%20et%20Routage%20avec%20Traefik.md) | Reverse proxy et SSL |
-| [08 - Gestion et Développement.md](doc/08%20-%20Gestion%20et%20Développement.md) | Portainer et MailHog |
-| [09 - Consolidation.md](doc/09%20-%20Consolidation,%20Sauvegarde%20et%20Bonnes%20Pratiques.md) | Scripts d'automatisation et stratégie de sauvegarde |
+
+### Documentation des Scripts
+
+| Document | Description |
+|----------|-------------|
+| [scripts/README.md](scripts/README.md) |  **Phase 10** - Configuration automatisée OpenLDAP et Zammad |
+| [scripts/config.yaml](scripts/config.yaml.example) | Fichier de configuration YAML (groupes, utilisateurs, intégration) |
+
+### Documentation Technique
+
+| Document | Description |
+|----------|-------------|
+| [00 - TicketOnTheFly.md](doc/doc_creation/00%20-%20TicketOnTheFly.md) | Vision globale et théorique du projet |
+| [01 - Fondations.md](doc/doc_creation/01%20-%20Fondations%20de%20l'Infrastructure%20et%20Conteneurisation.md) | Docker, Docker Compose, Infrastructure as Code |
+| [02 - OpenLDAP.md](doc/doc_creation/02%20-%20Gestion%20Centralisée%20des%20Identités%20avec%20OpenLDAP.md) | Configuration de l'annuaire LDAP |
+| [03 - Zammad.md](doc/doc_creation/03%20-%20Ticketing%20et%20Base%20de%20Connaissances%20avec%20Zammad.md) | Déploiement et intégration Zammad |
+| [04 - OCS Inventory.md](doc/doc_creation/04%20-%20Inventaire%20et%20Gestion%20du%20Parc%20Informatique%20avec%20OCS%20Inventory.md) | Inventaire automatisé |
+| [05 - Wiki.js.md](doc/doc_creation/05%20-%20Documentation%20Interne%20et%20Procédures%20avec%20Wiki.js.md) | Documentation technique |
+| [06 - Prometheus & Grafana.md](doc/doc_creation/06%20-%20Supervision,%20Métriques%20et%20Alerting%20avec%20Prometheus%20et%20Grafana.md) | Supervision et métriques |
+| [07 - Traefik.md](doc/doc_creation/07%20-%20Accès,%20Sécurité%20et%20Routage%20avec%20Traefik.md) | Reverse proxy et SSL |
+| [08 - Gestion et Développement.md](doc/doc_creation/08%20-%20Gestion%20et%20Développement.md) | Portainer et MailHog |
+| [09 - Consolidation.md](doc/doc_creation/09%20-%20Consolidation,%20Sauvegarde%20et%20Bonnes%20Pratiques.md) | Scripts d'automatisation et stratégie de sauvegarde |
+| [10 - Configuration Automatisée.md](doc/doc_creation/10%20-%20Configuration%20Automatisée.md) | Documentation technique de la Phase 10 |
 
 ---
 
@@ -429,10 +501,11 @@ docker-compose logs traefik
 - [x] **Phase 7** : Traefik (Reverse Proxy & SSL)
 - [x] **Phase 8** : MailHog (SMTP de test) & Portainer finalisé
 - [x] **Phase 9** : Consolidation, scripts d'automatisation et documentation finale
+- [x] **Phase 10** : Configuration automatisée OpenLDAP et Zammad
 
 ###  Projet Complet et Production-Ready !
 
-**19 services déployés** | **Infrastructure professionnelle** | **Documenté de A à Z**
+**19 services déployés** | **Configuration automatisée** | **Documenté de A à Z**
 
 ---
 
