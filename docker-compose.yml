@@ -201,6 +201,30 @@ services:
     networks:
       - ticketing_network
 
+  # --- Plateforme de Documentation : Wiki.js ---
+  wikijs:
+    image: requarks/wiki:2
+    container_name: wikijs
+    restart: unless-stopped
+    depends_on:
+      # S'assure que le serveur de BDD est démarré avant le wiki
+      - zammad-db
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=zammad-db
+      - DB_PORT=5432
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=${WIKIJS_DB_NAME}
+      - TZ=${TZ}
+    ports:
+      # Port pour l'interface web. Sera géré par Traefik plus tard.
+      - "127.0.0.1:8084:3000"
+    volumes:
+      - wikijs_data:/wiki/data
+    networks:
+      - ticketing_network
+
   # --- Service d'annuaire : OpenLDAP ---
   openldap:
     image: osixia/openldap:1.5.0
@@ -279,6 +303,7 @@ volumes:
   ocs_data:
   ocs_perlcomdata:
   ocs_ocsreportsdata:
+  wikijs_data:
 
 # --- Définition des réseaux ---
 # Créer un réseau dédié permettra à nos conteneurs de communiquer de manière isolée.

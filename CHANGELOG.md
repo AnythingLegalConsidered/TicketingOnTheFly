@@ -324,3 +324,204 @@ docker-compose exec ocs-server ls -la /usr/share/ocsinventory-reports/ocsreports
 
 ---
 
+## 2025-10-22 - Phase 5 : Documentation Interne avec Wiki.js
+
+### Objectif de cette Phase
+Déployer Wiki.js comme plateforme de documentation interne pour l'équipe technique, distincte de la base de connaissances Zammad (orientée utilisateurs finaux).
+
+### Distinction Documentation : Wiki.js vs Zammad
+- **Base de connaissances Zammad** : Orientée client/utilisateur final, solutions simples aux problèmes courants
+- **Wiki.js** : Orientée équipe technique, documentation d'infrastructure, procédures avancées, guides techniques
+
+### Étapes Réalisées
+
+#### 1. Ajout de la Variable d'Environnement
+**Fichier modifié :** `.env`
+
+```bash
+# Ajout de la variable pour la base de données Wiki.js
+WIKIJS_DB_NAME=wikijs
+```
+
+**Note :** Wiki.js partage le serveur PostgreSQL de Zammad mais utilise sa propre base de données pour une séparation logique des données.
+
+---
+
+#### 2. Ajout du Service Wiki.js au docker-compose.yml
+**Fichier modifié :** `docker-compose.yml`
+
+**Service ajouté :**
+
+```yaml
+wikijs:
+  image: requarks/wiki:2
+  container_name: wikijs
+  restart: unless-stopped
+  depends_on:
+    - zammad-db
+  environment:
+    - DB_TYPE=postgres
+    - DB_HOST=zammad-db
+    - DB_PORT=5432
+    - DB_USER=${POSTGRES_USER}
+    - DB_PASS=${POSTGRES_PASSWORD}
+    - DB_NAME=${WIKIJS_DB_NAME}
+    - TZ=${TZ}
+  ports:
+    - "127.0.0.1:8084:3000"
+  volumes:
+    - wikijs_data:/wiki/data
+  networks:
+    - ticketing_network
+```
+
+**Volume ajouté :** `wikijs_data`
+
+**⚠️ Changement de Port :** 
+- Document original: Port 8083
+- **Port utilisé: 8084** (8083 déjà utilisé par OCS Inventory)
+
+---
+
+#### 3. Création Manuelle de la Base de Données
+
+**Problème rencontré :** Wiki.js ne crée pas automatiquement sa base de données dans PostgreSQL.
+
+**Solution :**
+```bash
+# Créer la base de données wikijs dans PostgreSQL
+docker-compose exec zammad-db psql -U admin -d postgres -c "CREATE DATABASE wikijs;"
+
+# Redémarrer Wiki.js pour qu'il se connecte
+docker-compose restart wikijs
+```
+
+**Résultat :** La connexion à la base de données a réussi et le serveur HTTP démarre correctement.
+
+---
+
+#### 4. Démarrage et Vérification
+
+```bash
+# Lancer Wiki.js
+docker-compose up -d wikijs
+
+# Vérifier l'état
+docker-compose ps | Select-String -Pattern "wikijs"
+
+# Vérifier les logs
+docker logs wikijs --tail 30
+```
+
+**Logs de succès :**
+```
+2025-10-22T11:36:25.767Z [MASTER] info: Database Connection Successful [ OK ]
+2025-10-22T11:36:25.860Z [MASTER] info: HTTP Server on port: [ 3000 ]
+2025-10-22T11:36:25.862Z [MASTER] info: HTTP Server: [ RUNNING ]
+2025-10-22T11:36:25.863Z [MASTER] info: Browse to http://YOUR-SERVER-IP:3000/ to complete setup!
+```
+
+✅ **Wiki.js est maintenant opérationnel et prêt pour la configuration initiale.**
+
+---
+
+### Configuration Post-Installation Wiki.js
+
+#### Accès à l'Interface Web
+- **URL:** `http://localhost:8084`
+- **Port:** 8084 (lié à 127.0.0.1 pour la sécurité)
+
+#### Étapes de Configuration Initiale
+
+1. **Premier accès - Assistant d'installation**
+   ```
+   Ouvrir : http://localhost:8084
+   ```
+
+2. **Création du compte administrateur**
+   - Adresse email (sera l'identifiant de connexion)
+   - Mot de passe fort (minimum recommandé: 12 caractères)
+
+3. **Configuration de l'URL du site**
+   - URL de développement: `http://localhost:8084`
+   - URL de production (avec Traefik): `https://wiki.mondomaine.com`
+
+4. **Finaliser l'installation**
+   - Cliquer sur "Install"
+   - Se connecter avec les identifiants créés
+
+---
+
+### Configuration de l'Authentification LDAP
+
+**Objectif :** Permettre aux utilisateurs de l'annuaire OpenLDAP de se connecter à Wiki.js
+
+#### Procédure dans l'Interface Wiki.js
+
+1. **Accéder à l'administration**
+   - Menu en haut à droite > "Administration"
+
+2. **Configurer LDAP**
+   - Menu gauche > "Authentification"
+   - Cliquer sur "LDAP / Active Directory"
+   - Activer la stratégie (slider)
+
+3. **Paramètres de connexion LDAP**
+   ```
+   Host: openldap
+   Port: 389
+   Bind DN: cn=admin,dc=localhost
+   Password: [Valeur de LDAP_ADMIN_PASSWORD du .env]
+   Base DN: ou=users,dc=localhost
+   User Login Field: uid
+   ```
+
+4. **Profile Mapping (Correspondance des champs)**
+   ```
+   Username: uid
+   Display Name: cn
+   Email: mail
+   ```
+
+5. **Sauvegarder**
+   - Cliquer sur "Appliquer" en haut à droite
+
+6. **Tester**
+   - Se déconnecter
+   - Se reconnecter avec un utilisateur LDAP
+
+---
+
+### Récapitulatif des Ports (Mise à jour)
+
+| Service          | Port Local      | URL                            |
+|------------------|-----------------|--------------------------------|
+| phpLDAPadmin     | 8080            | http://localhost:8080          |
+| Zammad           | 8081            | http://localhost:8081          |
+| Zammad Rails     | 8082            | http://localhost:8082          |
+| OCS Inventory    | 8083            | http://localhost:8083/ocsreports |
+| **Wiki.js**      | **8084**        | **http://localhost:8084**      |
+| Portainer (HTTP) | 9000            | http://localhost:9000          |
+| Portainer (HTTPS)| 9443            | https://localhost:9443         |
+
+---
+
+### Prochaines Étapes
+
+1. **Configuration Post-Installation**
+   - Créer le compte administrateur
+   - Configurer l'authentification LDAP
+   - Créer la structure initiale du wiki
+
+2. **Phase 6 : Supervision**
+   - Déployer Prometheus pour la collecte de métriques
+   - Déployer Grafana pour la visualisation
+   - Configurer les alertes
+
+3. **Phase 7 : Reverse Proxy**
+   - Configurer Traefik pour l'accès unifié
+   - Mettre en place les certificats SSL/TLS automatiques
+   - Configurer les noms de domaine
+
+---
+

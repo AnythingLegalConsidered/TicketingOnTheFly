@@ -54,6 +54,84 @@ Si la commande ne retourne rien, le fichier a bien été supprimé.
 
 ---
 
+## Wiki.js - Configuration Initiale
+
+### Accès à l'Interface
+**URL:** `http://localhost:8084`
+
+### Assistant d'Installation (Premier démarrage uniquement)
+
+1. **Ouvrir l'URL** dans votre navigateur
+
+2. **Créer le compte administrateur :**
+   - **Email:** Votre adresse email (sera l'identifiant de connexion)
+   - **Mot de passe:** Un mot de passe fort (minimum 12 caractères recommandés)
+   - **Confirmer le mot de passe**
+
+3. **Configurer l'URL du site :**
+   - Pour le développement : `http://localhost:8084`
+   - Pour la production (avec Traefik) : `https://wiki.votre-domaine.com`
+
+4. **Finaliser l'installation :**
+   - Cliquer sur "Install"
+   - Attendre que l'installation se termine
+   - Vous serez automatiquement connecté
+
+### Configuration de l'Authentification LDAP
+
+**Objectif :** Permettre aux utilisateurs de l'annuaire OpenLDAP de se connecter à Wiki.js
+
+#### Étapes
+
+1. **Accéder à l'administration**
+   - Cliquer sur votre avatar en haut à droite
+   - Sélectionner "Administration"
+
+2. **Aller dans Authentification**
+   - Dans le menu de gauche : "Authentification"
+   - Cliquer sur "LDAP / Active Directory"
+
+3. **Activer et configurer LDAP**
+   - Activer le slider pour activer cette méthode d'authentification
+
+4. **Renseigner les paramètres de connexion :**
+   ```
+   Host: openldap
+   Port: 389
+   Bind DN: cn=admin,dc=localhost
+   Password: Voir LDAP_ADMIN_PASSWORD dans le fichier .env
+   Base DN: ou=users,dc=localhost
+   User Login Field: uid
+   ```
+
+5. **Configuration du Profile Mapping :**
+   ```
+   Username Field: uid
+   Display Name Field: cn
+   Email Field: mail
+   ```
+
+6. **Sauvegarder la configuration**
+   - Cliquer sur "Apply" en haut à droite
+
+7. **Tester la connexion LDAP**
+   - Se déconnecter de Wiki.js
+   - Tenter de se reconnecter avec un compte utilisateur LDAP
+
+### Premières Pages à Créer
+
+1. **Page d'accueil**
+   - Créer une page d'accueil personnalisée
+   - Expliquer l'objet du wiki (documentation technique interne)
+
+2. **Structure recommandée :**
+   - `/infrastructure` - Documentation de l'infrastructure
+   - `/procedures` - Procédures opérationnelles
+   - `/troubleshooting` - Guides de dépannage
+   - `/onboarding` - Guide d'intégration nouveaux membres
+
+---
+
 ## Zammad - Configuration Initiale
 
 ### Accès à l'Interface
@@ -164,6 +242,7 @@ Une fois OpenLDAP configuré :
 | Zammad           | 8081            | http://localhost:8081          |
 | Zammad Rails     | 8082            | http://localhost:8082          |
 | OCS Inventory    | 8083            | http://localhost:8083/ocsreports |
+| Wiki.js          | 8084            | http://localhost:8084          |
 | Portainer (HTTP) | 9000            | http://localhost:9000          |
 | Portainer (HTTPS)| 9443            | https://localhost:9443         |
 
@@ -175,7 +254,8 @@ Une fois OpenLDAP configuré :
 2. ✅ **phpLDAPadmin** - Créer la structure LDAP et les premiers utilisateurs
 3. ✅ **OCS Inventory** - Configuration initiale et sécurisation
 4. ✅ **Zammad** - Configuration et intégration LDAP
-5. 📝 **Wiki.js** - À configurer dans la Phase 5
+5. ✅ **Wiki.js** - Configuration et intégration LDAP
+6. 📝 **Prometheus & Grafana** - À configurer dans la Phase 6
 
 ---
 
@@ -237,10 +317,11 @@ docker run --rm -v ticketingonthefly_ocs_db_data:/data -v ${PWD}/backup:/backup 
 **Volumes importants à sauvegarder régulièrement :**
 - `portainer_data`
 - `ldap_data` et `ldap_config`
-- `postgres_data` (Zammad)
+- `postgres_data` (Zammad + Wiki.js)
 - `zammad_data`
 - `ocs_db_data`
 - `ocs_data`, `ocs_perlcomdata`, `ocs_ocsreportsdata`
+- `wikijs_data`
 
 ---
 
@@ -250,5 +331,6 @@ docker run --rm -v ticketingonthefly_ocs_db_data:/data -v ${PWD}/backup:/backup 
 - **Zammad:** https://docs.zammad.org/
 - **OCS Inventory:** https://wiki.ocsinventory-ng.org/
 - **OpenLDAP:** https://www.openldap.org/doc/
+- **Wiki.js:** https://docs.requarks.io/
 - **Portainer:** https://docs.portainer.io/
 
