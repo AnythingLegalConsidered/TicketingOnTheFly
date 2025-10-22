@@ -1,0 +1,16 @@
+# Fichier de configuration global de Prometheus
+global:
+  scrape_interval: 15s # Par défaut, interroge les cibles toutes les 15 secondes.
+  evaluation_interval: 15s # Évalue les règles toutes les 15 secondes.
+
+# Liste des jobs de scraping
+scrape_configs:
+  # Job pour surveiller Prometheus lui-même
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Job pour surveiller les métriques des conteneurs via cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']

@@ -525,3 +525,289 @@ docker logs wikijs --tail 30
 
 ---
 
+## 2025-10-22 - Phase 6 : Supervision et Monitoring avec Prometheus & Grafana
+
+### Objectif de cette Phase
+Déployer une pile de supervision complète pour surveiller la santé et les performances de tous les conteneurs Docker en temps réel. Passer d'un mode **réactif** à un mode **proactif**.
+
+### Théorie : Pourquoi la Supervision est Critique
+
+#### Surveillance Proactive vs Réactive
+- **Mode réactif** (AVANT) : "Un utilisateur appelle car le site est lent"
+- **Mode proactif** (APRÈS) : "Je vois que le CPU du serveur de BDD augmente dangereusement, j'investigue avant impact"
+
+#### Indicateurs Clés Surveillés
+- Santé des conteneurs (démarrés, arrêtés, redémarrages en boucle)
+- Consommation ressources (CPU, RAM, I/O disque, réseau)
+- Performances applicatives (temps de réponse, nombre de requêtes)
+
+#### Architecture de Supervision
+
+**Le Duo Prometheus & Grafana :**
+1. **Prometheus** : Base de données optimisée pour séries temporelles
+   - Fonctionne en "scraping" : interroge les cibles toutes les 15s sur `/metrics`
+   - Stocke les métriques avec timestamp
+
+2. **Grafana** : Interface de visualisation
+   - Ne collecte pas de données
+   - Se connecte à Prometheus
+   - Crée des tableaux de bord interactifs
+
+3. **cAdvisor** : Exportateur de métriques Docker
+   - Expose automatiquement les métriques de TOUS les conteneurs
+   - Prometheus scrape cAdvisor pour avoir vue complète
+
+---
+
+### Étapes Réalisées
+
+#### 1. Création du Fichier de Configuration Prometheus
+
+**Fichier créé :** `config/prometheus/prometheus.yml`
+
+```yaml
+# Fichier de configuration global de Prometheus
+global:
+  scrape_interval: 15s # Interroge les cibles toutes les 15 secondes
+  evaluation_interval: 15s # Évalue les règles toutes les 15 secondes
+
+# Liste des jobs de scraping
+scrape_configs:
+  # Job pour surveiller Prometheus lui-même
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Job pour surveiller les métriques des conteneurs via cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+```
+
+**Explication :**
+- **Job 1 (prometheus)** : Prometheus se surveille lui-même
+- **Job 2 (cadvisor)** : Prometheus récupère les métriques de tous les conteneurs via cAdvisor
+
+---
+
+#### 2. Ajout des Services au docker-compose.yml
+
+**Fichier modifié :** `docker-compose.yml`
+
+**Services ajoutés :**
+
+1. **Prometheus** (Collecteur de métriques)
+```yaml
+prometheus:
+  image: prom/prometheus:v2.47.1
+  container_name: prometheus
+  restart: unless-stopped
+  ports:
+    - "127.0.0.1:9090:9090"
+  volumes:
+    - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    - prometheus_data:/prometheus
+  command:
+    - '--config.file=/etc/prometheus/prometheus.yml'
+    - '--storage.tsdb.path=/prometheus'
+  networks:
+    - ticketing_network
+```
+
+2. **Grafana** (Visualisation)
+```yaml
+grafana:
+  image: grafana/grafana-oss:10.1.5
+  container_name: grafana
+  restart: unless-stopped
+  environment:
+    - TZ=${TZ}
+  ports:
+    - "127.0.0.1:8085:3000"
+  volumes:
+    - grafana_data:/var/lib/grafana
+  networks:
+    - ticketing_network
+```
+
+3. **cAdvisor** (Exportateur métriques Docker)
+```yaml
+cadvisor:
+  image: gcr.io/cadvisor/cadvisor:v0.47.2
+  container_name: cadvisor
+  restart: unless-stopped
+  privileged: true
+  devices:
+    - /dev/kmsg
+  volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:ro
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    - /dev/disk/:/dev/disk:ro
+  networks:
+    - ticketing_network
+```
+
+**Volumes ajoutés :**
+- `prometheus_data` : Stockage des métriques
+- `grafana_data` : Données Grafana
+
+**⚠️ Gestion des Conflits de Ports :**
+- Document original suggère port 8084 pour Grafana
+- **Port utilisé: 8085** (8084 déjà pris par Wiki.js, 3000 interne de Grafana)
+
+---
+
+#### 3. Démarrage et Vérification
+
+```bash
+# Lancer tous les services
+docker-compose up -d
+
+# Vérifier l'état des services de supervision
+docker-compose ps | Select-String -Pattern "prometheus|grafana|cadvisor"
+
+# Vérifier les logs Prometheus
+docker logs prometheus --tail 20
+```
+
+**Résultat :**
+```
+cadvisor     Up 34 seconds (healthy)   8080/tcp
+grafana      Up 34 seconds             127.0.0.1:8085->3000/tcp
+prometheus   Up 34 seconds             127.0.0.1:9090->9090/tcp
+```
+
+✅ **Tous les services de supervision sont opérationnels.**
+
+---
+
+### Configuration Post-Installation
+
+#### Prometheus - Vérification des Targets
+
+1. **Accéder à Prometheus**
+   ```
+   URL: http://localhost:9090
+   ```
+
+2. **Vérifier les targets (CRITIQUE)**
+   - Menu: **Status > Targets**
+   - Vérifier que les 2 jobs sont présents :
+     - `prometheus` : État **UP** (vert)
+     - `cadvisor` : État **UP** (vert)
+
+3. **Explorer les métriques**
+   - Barre de recherche : taper `container_`
+   - Auto-complétion montre toutes les métriques cAdvisor disponibles
+   - Exemples :
+     - `container_cpu_usage_seconds_total`
+     - `container_memory_usage_bytes`
+     - `container_network_receive_bytes_total`
+
+---
+
+#### Grafana - Configuration Initiale
+
+1. **Accéder à Grafana**
+   ```
+   URL: http://localhost:8085
+   ```
+
+2. **Première connexion**
+   - Utilisateur par défaut: `admin`
+   - Mot de passe par défaut: `admin`
+   - **⚠️ Grafana force le changement de mot de passe immédiatement**
+
+3. **Ajouter Prometheus comme Source de Données**
+   - Icône engrenage (menu gauche) > "Data Sources"
+   - Cliquer "Add data source"
+   - Sélectionner "Prometheus"
+   - **Prometheus server URL:** `http://prometheus:9090`
+   - Cliquer "Save & test"
+   - Message de succès : "Data source is working" (vert)
+
+4. **Importer un Tableau de Bord Communautaire**
+   - Icône 4 carrés (menu gauche) > "Dashboards"
+   - Cliquer "Import"
+   - **Import via grafana.com:** Entrer l'ID `13981`
+   - Cliquer "Load"
+   - Sélectionner la source de données Prometheus créée
+   - Cliquer "Import"
+
+**Dashboard 13981 :** Excellent tableau de bord communautaire pour cAdvisor
+- Visualisation CPU, RAM, Réseau, I/O disque
+- Vue par conteneur
+- Temps réel
+
+---
+
+### Récapitulatif des Ports (Mise à jour)
+
+| Service          | Port Local      | URL                            |
+|------------------|-----------------|--------------------------------|
+| phpLDAPadmin     | 8080            | http://localhost:8080          |
+| Zammad           | 8081            | http://localhost:8081          |
+| Zammad Rails     | 8082            | http://localhost:8082          |
+| OCS Inventory    | 8083            | http://localhost:8083/ocsreports |
+| Wiki.js          | 8084            | http://localhost:8084          |
+| **Grafana**      | **8085**        | **http://localhost:8085**      |
+| **Prometheus**   | **9090**        | **http://localhost:9090**      |
+| Portainer (HTTP) | 9000            | http://localhost:9000          |
+| Portainer (HTTPS)| 9443            | https://localhost:9443         |
+
+**Note:** cAdvisor n'expose pas de port sur l'hôte (port 8080 interne uniquement, accessible par Prometheus)
+
+---
+
+### Métriques Disponibles
+
+#### Exemples de Métriques cAdvisor
+
+**Conteneurs :**
+- `container_last_seen` : Dernier scrape réussi
+- `container_start_time_seconds` : Timestamp de démarrage
+
+**CPU :**
+- `container_cpu_usage_seconds_total` : Utilisation CPU cumulée
+- `container_cpu_system_seconds_total` : Temps CPU système
+
+**Mémoire :**
+- `container_memory_usage_bytes` : Utilisation mémoire actuelle
+- `container_memory_max_usage_bytes` : Pic d'utilisation
+- `container_memory_working_set_bytes` : Working set (mémoire active)
+
+**Réseau :**
+- `container_network_receive_bytes_total` : Octets reçus
+- `container_network_transmit_bytes_total` : Octets envoyés
+- `container_network_receive_errors_total` : Erreurs de réception
+
+**Disque :**
+- `container_fs_usage_bytes` : Utilisation disque
+- `container_fs_limit_bytes` : Limite disque
+
+---
+
+### Prochaines Étapes
+
+1. **Configurer des Alertes**
+   - Créer des règles d'alerte dans Prometheus
+   - Configurer Alertmanager pour notifications email/Slack
+   - Exemples d'alertes :
+     - CPU > 80% pendant 5 minutes
+     - RAM > 90% pendant 2 minutes
+     - Conteneur redémarre en boucle
+
+2. **Tableaux de Bord Personnalisés**
+   - Créer des dashboards spécifiques par service
+   - Dashboard global de santé infrastructure
+   - Dashboard par application (Zammad, OCS, Wiki.js)
+
+3. **Phase 7 : Reverse Proxy Traefik**
+   - Point d'entrée unique pour tous les services
+   - HTTPS automatique avec Let's Encrypt
+   - Noms de domaine : tickets.domain.com, wiki.domain.com, etc.
+
+---
+

@@ -234,6 +234,131 @@ Une fois OpenLDAP configuré :
 
 ---
 
+## Prometheus & Grafana - Supervision et Monitoring
+
+### Prometheus - Collecte des Métriques
+
+#### Vérification du Démarrage
+**URL:** `http://localhost:9090`
+
+1. **Vérifier les Cibles (Targets)**
+   - Aller dans **Status > Targets**
+   - Vérifier que les 2 jobs sont **UP** :
+     - `prometheus` (auto-monitoring)
+     - `cadvisor` (métriques des conteneurs Docker)
+
+2. **Tester des Requêtes PromQL**
+   - Aller dans **Graph**
+   - Exemples de requêtes :
+     - `up` : statut de tous les targets
+     - `container_memory_usage_bytes` : utilisation mémoire des conteneurs
+     - `container_cpu_usage_seconds_total` : utilisation CPU
+
+#### Fichier de Configuration
+- **Emplacement:** `config/prometheus/prometheus.yml`
+- **Intervalle de scraping:** 15 secondes
+- **Targets configurées:**
+  - Prometheus lui-même (localhost:9090)
+  - cAdvisor (cadvisor:8080)
+
+**Note:** Pour ajouter de nouvelles cibles, modifier `prometheus.yml` et redémarrer le conteneur :
+```bash
+docker-compose restart prometheus
+```
+
+### Grafana - Visualisation des Métriques
+
+#### Premier Accès
+**URL:** `http://localhost:8085`
+
+1. **Connexion Initiale**
+   - Utilisateur: `admin`
+   - Mot de passe: `admin`
+   - **Important:** Changez le mot de passe à la première connexion
+
+2. **Ajouter la Source de Données Prometheus**
+   - Aller dans **Configuration > Data Sources** (icône engrenage à gauche)
+   - Cliquer sur **Add data source**
+   - Sélectionner **Prometheus**
+   - Configurer :
+     - **Name:** Prometheus
+     - **URL:** `http://prometheus:9090`
+     - Laisser les autres paramètres par défaut
+   - Cliquer sur **Save & test**
+   - Vérifier le message vert : "Data source is working"
+
+3. **Importer un Dashboard pour Docker**
+   - Aller dans **Dashboards > Import** (icône + à gauche)
+   - Entrer l'ID du dashboard : **13981** (Docker cAdvisor Dashboard)
+   - Cliquer sur **Load**
+   - Sélectionner la source de données **Prometheus**
+   - Cliquer sur **Import**
+   - Le dashboard affiche maintenant les métriques des conteneurs Docker
+
+#### Dashboards Recommandés
+
+| Dashboard ID | Nom                              | Description                          |
+|--------------|----------------------------------|--------------------------------------|
+| 13981        | Docker Container & Host Metrics  | Métriques détaillées des conteneurs  |
+| 193          | Docker Monitoring                | Vue d'ensemble Docker                |
+| 1860         | Node Exporter Full               | Métriques système (si node_exporter) |
+| 3662         | Prometheus 2.0 Overview          | Métriques Prometheus lui-même        |
+
+#### Création d'Alertes
+- Aller dans **Alerting > Alert rules**
+- Exemples d'alertes utiles :
+  - Conteneur arrêté : `up{job="cadvisor"} == 0`
+  - Mémoire élevée : `container_memory_usage_bytes > 1GB`
+  - CPU élevé : `rate(container_cpu_usage_seconds_total[5m]) > 0.8`
+
+### Métriques Disponibles
+
+#### Métriques Conteneurs (via cAdvisor)
+- `container_cpu_usage_seconds_total` : Utilisation CPU cumulée
+- `container_memory_usage_bytes` : Utilisation mémoire actuelle
+- `container_network_receive_bytes_total` : Octets réseau reçus
+- `container_network_transmit_bytes_total` : Octets réseau envoyés
+- `container_fs_usage_bytes` : Utilisation disque du conteneur
+
+#### Métriques Prometheus
+- `prometheus_tsdb_storage_blocks_bytes` : Taille des blocs de stockage
+- `prometheus_http_requests_total` : Nombre de requêtes HTTP
+- `prometheus_target_scrapes_total` : Nombre de scrapes effectués
+
+### Dépannage
+
+#### Prometheus ne démarre pas
+```bash
+# Vérifier les logs
+docker logs prometheus
+
+# Vérifier la syntaxe du fichier de configuration
+docker-compose exec prometheus promtool check config /etc/prometheus/prometheus.yml
+```
+
+#### cAdvisor n'apparaît pas dans les Targets
+```bash
+# Vérifier que cAdvisor est en cours d'exécution
+docker-compose ps cadvisor
+
+# Vérifier les logs de cAdvisor
+docker logs cadvisor
+
+# Tester l'accès aux métriques depuis Prometheus
+docker-compose exec prometheus wget -O- http://cadvisor:8080/metrics
+```
+
+#### Grafana ne peut pas se connecter à Prometheus
+```bash
+# Vérifier que Prometheus est accessible depuis Grafana
+docker-compose exec grafana wget -O- http://prometheus:9090/api/v1/query?query=up
+
+# Vérifier le réseau Docker
+docker network inspect systeme-ticketing-net
+```
+
+---
+
 ## Récapitulatif des Ports
 
 | Service          | Port Local      | URL                            |
@@ -243,7 +368,9 @@ Une fois OpenLDAP configuré :
 | Zammad Rails     | 8082            | http://localhost:8082          |
 | OCS Inventory    | 8083            | http://localhost:8083/ocsreports |
 | Wiki.js          | 8084            | http://localhost:8084          |
+| Grafana          | 8085            | http://localhost:8085          |
 | Portainer (HTTP) | 9000            | http://localhost:9000          |
+| Prometheus       | 9090            | http://localhost:9090          |
 | Portainer (HTTPS)| 9443            | https://localhost:9443         |
 
 ---
@@ -255,7 +382,7 @@ Une fois OpenLDAP configuré :
 3. ✅ **OCS Inventory** - Configuration initiale et sécurisation
 4. ✅ **Zammad** - Configuration et intégration LDAP
 5. ✅ **Wiki.js** - Configuration et intégration LDAP
-6. 📝 **Prometheus & Grafana** - À configurer dans la Phase 6
+6. ✅ **Prometheus & Grafana** - Ajouter la datasource Prometheus et importer les dashboards
 
 ---
 
@@ -322,6 +449,8 @@ docker run --rm -v ticketingonthefly_ocs_db_data:/data -v ${PWD}/backup:/backup 
 - `ocs_db_data`
 - `ocs_data`, `ocs_perlcomdata`, `ocs_ocsreportsdata`
 - `wikijs_data`
+- `prometheus_data`
+- `grafana_data`
 
 ---
 
@@ -333,4 +462,6 @@ docker run --rm -v ticketingonthefly_ocs_db_data:/data -v ${PWD}/backup:/backup 
 - **OpenLDAP:** https://www.openldap.org/doc/
 - **Wiki.js:** https://docs.requarks.io/
 - **Portainer:** https://docs.portainer.io/
+- **Prometheus:** https://prometheus.io/docs/
+- **Grafana:** https://grafana.com/docs/
 

@@ -269,6 +269,59 @@ services:
     networks:
       - ticketing_network
 
+  # --- Collecteur de métriques : Prometheus ---
+  prometheus:
+    image: prom/prometheus:v2.47.1
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      # Port pour l'interface web de Prometheus
+      - "127.0.0.1:9090:9090"
+    volumes:
+      # Montage du fichier de configuration
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      # Volume pour stocker les données des métriques
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - ticketing_network
+
+  # --- Visualisation des métriques : Grafana ---
+  grafana:
+    image: grafana/grafana-oss:10.1.5
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    ports:
+      # Port pour l'interface web de Grafana
+      # Note: 3000 est le port interne, mappé sur 8085 (8084 déjà pris par Wiki.js)
+      - "127.0.0.1:8085:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - ticketing_network
+
+  # --- Exportateur de métriques Docker : cAdvisor ---
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: cadvisor
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/kmsg
+    volumes:
+      # Accès requis pour que cAdvisor puisse lire les informations des conteneurs
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - ticketing_network
+
   # --- Service de gestion Docker : Portainer ---
   portainer:
     image: portainer/portainer-ce:latest
@@ -304,6 +357,8 @@ volumes:
   ocs_perlcomdata:
   ocs_ocsreportsdata:
   wikijs_data:
+  prometheus_data:
+  grafana_data:
 
 # --- Définition des réseaux ---
 # Créer un réseau dédié permettra à nos conteneurs de communiquer de manière isolée.
