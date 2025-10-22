@@ -1,0 +1,248 @@
+#=============================================================================
+# CONFIGURATION CENTRALISÉE - TicketingOnTheFly
+#=============================================================================
+# Ce fichier contient toute la configuration pour la création automatique
+# des groupes et utilisateurs LDAP, ainsi que leur mapping dans Zammad.
+#
+# IMPORTANT : Ce fichier contient des mots de passe en clair
+#             Il est exclus de Git via .gitignore pour la sécurité
+#=============================================================================
+
+#-----------------------------------------------------------------------------
+# GROUPES LDAP
+#-----------------------------------------------------------------------------
+# Les groupes LDAP qui seront créés dans ou=groups,dc=localhost
+# Ces groupes doivent correspondre 1:1 avec les groupes Zammad (même nom)
+
+ldap:
+  groups:
+    # Groupe 1 : Support Niveau 1
+    - name: "support-n1"
+      description: "Support Niveau 1 - Premier contact utilisateurs"
+    
+    # Groupe 2 : Support Niveau 2 - Experts
+    - name: "support-n2"
+      description: "Support Niveau 2 - Experts techniques"
+    
+    # Groupe 3 : Administrateurs système
+    - name: "administrateurs"
+      description: "Administrateurs système et support"
+    
+    # Groupe 4 : Utilisateurs finaux
+    - name: "utilisateurs"
+      description: "Utilisateurs finaux de l'organisation"
+
+  #---------------------------------------------------------------------------
+  # UTILISATEURS LDAP
+  #---------------------------------------------------------------------------
+  # Les utilisateurs LDAP qui seront créés dans ou=users,dc=localhost
+  
+  users:
+    # Techniciens Niveau 1 (2 utilisateurs)
+    - uid: "tech1"
+      firstName: "Pierre"
+      lastName: "Martin"
+      email: "pierre.martin@localhost"
+      password: "TechN1Pass123!"
+      groups: ["support-n1"]
+    
+    - uid: "tech2"
+      firstName: "Marie"
+      lastName: "Dubois"
+      email: "marie.dubois@localhost"
+      password: "TechN1Pass123!"
+      groups: ["support-n1"]
+    
+    # Techniciens Niveau 2 (2 utilisateurs)
+    - uid: "expert1"
+      firstName: "Jean"
+      lastName: "Dupont"
+      email: "jean.dupont@localhost"
+      password: "TechN2Pass123!"
+      groups: ["support-n2"]
+    
+    - uid: "expert2"
+      firstName: "Sophie"
+      lastName: "Bernard"
+      email: "sophie.bernard@localhost"
+      password: "TechN2Pass123!"
+      groups: ["support-n2"]
+    
+    # Administrateur (1 utilisateur - membre de plusieurs groupes)
+    - uid: "admin.support"
+      firstName: "Admin"
+      lastName: "Support"
+      email: "admin.support@localhost"
+      password: "AdminPass123!"
+      groups: ["administrateurs", "support-n2"]
+    
+    # Utilisateurs finaux (3 utilisateurs)
+    - uid: "user1"
+      firstName: "Alice"
+      lastName: "Leclerc"
+      email: "alice.leclerc@localhost"
+      password: "UserPass123!"
+      groups: ["utilisateurs"]
+    
+    - uid: "user2"
+      firstName: "Bob"
+      lastName: "Rousseau"
+      email: "bob.rousseau@localhost"
+      password: "UserPass123!"
+      groups: ["utilisateurs"]
+    
+    - uid: "user3"
+      firstName: "Claire"
+      lastName: "Moreau"
+      email: "claire.moreau@localhost"
+      password: "UserPass123!"
+      groups: ["utilisateurs"]
+
+#-----------------------------------------------------------------------------
+# GROUPES ZAMMAD (Mapping 1:1 avec LDAP)
+#-----------------------------------------------------------------------------
+# Les groupes Zammad qui seront créés
+# IMPORTANT : Le nom doit être IDENTIQUE au nom du groupe LDAP pour le mapping 1:1
+
+zammad:
+  groups:
+    # Groupe 1 : Support Niveau 1 (correspond à LDAP "support-n1")
+    - name: "support-n1"
+      display_name: "Support Niveau 1"
+      note: "Techniciens de premier niveau - Premier contact utilisateurs"
+      email_address: "support-n1@localhost"
+      assignment_timeout: 120  # Minutes avant réassignation automatique
+      follow_up_possible: "yes"
+      active: true
+    
+    # Groupe 2 : Support Niveau 2 (correspond à LDAP "support-n2")
+    - name: "support-n2"
+      display_name: "Support Niveau 2"
+      note: "Experts techniques - Problèmes complexes"
+      email_address: "support-n2@localhost"
+      assignment_timeout: 240
+      follow_up_possible: "yes"
+      active: true
+    
+    # Groupe 3 : Administrateurs (correspond à LDAP "administrateurs")
+    - name: "administrateurs"
+      display_name: "Administrateurs"
+      note: "Administrateurs système et support"
+      email_address: "admin@localhost"
+      assignment_timeout: null  # Pas de timeout
+      follow_up_possible: "yes"
+      active: true
+    
+    # Groupe 4 : Utilisateurs (correspond à LDAP "utilisateurs")
+    - name: "utilisateurs"
+      display_name: "Utilisateurs"
+      note: "Utilisateurs finaux de l'organisation"
+      email_address: "users@localhost"
+      assignment_timeout: null
+      follow_up_possible: "no"
+      active: true
+
+  #---------------------------------------------------------------------------
+  # INTÉGRATION LDAP ZAMMAD
+  #---------------------------------------------------------------------------
+  # Configuration de la connexion LDAP dans Zammad
+  
+  ldap_integration:
+    enabled: true
+    name: "OpenLDAP"
+    host: "openldap"
+    port: 389
+    ssl: false
+    bind_user: "cn=admin,dc=localhost"
+    # Le mot de passe sera récupéré depuis .env (LDAP_ADMIN_PASSWORD)
+    base_dn: "ou=users,dc=localhost"
+    
+    # Mapping des attributs LDAP vers Zammad
+    user_attributes:
+      login: "uid"
+      firstname: "givenName"
+      lastname: "sn"
+      email: "mail"
+    
+    # Synchronisation des groupes
+    group_sync:
+      enabled: true
+      base: "ou=groups,dc=localhost"
+      filter: "(objectClass=groupOfNames)"
+      member_attribute: "member"
+    
+    # Mapping des groupes LDAP vers les rôles Zammad
+    role_mapping:
+      support-n1: "Agent"         # Techniciens N1 → Agent
+      support-n2: "Agent"         # Techniciens N2 → Agent
+      administrateurs: "Admin"    # Administrateurs → Admin
+      utilisateurs: "Customer"    # Utilisateurs → Customer
+
+#-----------------------------------------------------------------------------
+# CONFIGURATION EMAIL → TICKET (Optionnel)
+#-----------------------------------------------------------------------------
+# Configuration pour créer automatiquement des tickets depuis les emails
+
+email_to_ticket:
+  # Mode : "mailhog" (dev) ou "imap" (production)
+  mode: "mailhog"
+  
+  # Configuration MailHog (développement)
+  mailhog:
+    enabled: true
+    host: "mailhog"
+    port: 1025
+    
+    # Mapping email → groupe Zammad
+    email_groups:
+      - email: "support-n1@localhost"
+        group: "support-n1"
+      - email: "support-n2@localhost"
+        group: "support-n2"
+      - email: "admin@localhost"
+        group: "administrateurs"
+  
+  # Configuration IMAP (production)
+  imap:
+    enabled: false
+    host: "imap.gmail.com"
+    port: 993
+    ssl: true
+    user: "ticketing@monentreprise.com"
+    password: "MotDePasseApp"
+    folder: "INBOX"
+    delete_after_import: false
+
+#-----------------------------------------------------------------------------
+# OPTIONS AVANCÉES (Optionnel)
+#-----------------------------------------------------------------------------
+
+advanced:
+  # Créer des tickets de démonstration
+  create_demo_tickets: false
+  demo_tickets_count: 10
+  
+  # Configurer des SLA par défaut
+  configure_sla: false
+  sla:
+    - name: "Standard"
+      first_response_time: 8  # heures
+      update_time: 24
+      solution_time: 48
+    
+    - name: "Urgent"
+      first_response_time: 2
+      update_time: 6
+      solution_time: 12
+  
+  # Créer des triggers automatiques
+  create_triggers: false
+  
+  # Créer des modules de texte (réponses types)
+  create_text_modules: false
+
+#=============================================================================
+# FIN DE LA CONFIGURATION
+#=============================================================================
+# Pour appliquer cette configuration, exécuter : ./configure-all.sh
+#=============================================================================

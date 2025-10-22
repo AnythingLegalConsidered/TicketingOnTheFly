@@ -1,0 +1,10 @@
+# Configuration avec mots de passe (NE PAS COMMITTER)
+config.yaml
+
+# Garder l'exemple sans mots de passe réels
+!config.yaml.example
+
+# Fichiers temporaires
+*.tmp
+*.ldif
+tmp/
